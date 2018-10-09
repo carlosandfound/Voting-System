@@ -1,5 +1,5 @@
 # repo-Team17
-Team17 (Alvargenga, Zhang, Koo, McLaughlin)
+Team17 (Alvarenga, Zhang, Koo, McLaughlin)
 
 1)  Carlos Alvarenga (alvar357)
 2)  Xiaochen Zhang (zhan6687)
