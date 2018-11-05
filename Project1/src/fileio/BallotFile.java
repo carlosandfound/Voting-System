@@ -12,7 +12,7 @@ public class BallotFile {
     }
 
     public String getFilename() {
-        return this.filename;
+        return filename;
     }
 
     public String getLine(int line_num) {
