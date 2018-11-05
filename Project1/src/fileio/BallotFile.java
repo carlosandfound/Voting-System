@@ -11,6 +11,10 @@ public class BallotFile {
         // TODO: read "filename" and load the data into "data"
     }
 
+    public String getFilename() {
+        return this.filename;
+    }
+
     public String getLine(int line_num) {
         return data[line_num-1];
     }
