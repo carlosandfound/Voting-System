@@ -22,27 +22,27 @@ public class Party {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public int getNumCandidates() {
-        return this.num_candidates;
+        return num_candidates;
     }
 
     public int getNumSeats() {
-        return this.num_seats;
+        return num_seats;
     }
 
     public int getNumVotes() {
-        return this.num_votes;
+        return num_votes;
     }
 
     public int getNumRemainingVotes() {
-        return this.num_remaining_votes;
+        return num_remaining_votes;
     }
 
     public List<Integer> getAcquiredBallots() {
-        return this.acquired_ballots;
+        return acquired_ballots;
     }
 
     public void setName(String name) {
