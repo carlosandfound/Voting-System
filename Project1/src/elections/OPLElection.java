@@ -21,6 +21,12 @@ public class OPLElection implements Election {
     private Party[] parties;
     private Set<Candidate> winning_candidates;
     private Set<Party> winning_parties;
+
+    public OPLElection(BallotFile bf, AuditFile af) {
+        this.bf = bf;
+        this.af = af;
+    }
+
     @Override
     public void runElection() {
 
