@@ -1,7 +1,9 @@
 package elections;
 
+import java.util.Set;
+
 public interface Election {
     void runElection();
-    void getCandidateWinners();
-    void getPartyWinners();
+    Set<Candidate> getCandidateWinners();
+    Set<Party> getPartyWinners();
 }
