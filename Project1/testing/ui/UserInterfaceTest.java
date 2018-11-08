@@ -2,11 +2,9 @@ package ui;
 
 import elections.IRElection;
 import elections.OPLElection;
-import fileio.AuditFile;
 import fileio.BallotFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -18,7 +16,6 @@ class UserInterfaceTest {
     private OPLElection opl;
     private IRElection ir;
     private BallotFile bf;
-    private AuditFile af;
     private UserInterface ui;
 
     @BeforeEach

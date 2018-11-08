@@ -1,6 +1,5 @@
 package elections;
 
-import fileio.AuditFile;
 import fileio.BallotFile;
 
 import java.util.Set;
@@ -8,11 +7,9 @@ import java.util.Set;
 public class IRElection implements Election {
 
     BallotFile bf;
-    AuditFile af;
 
-    public IRElection(BallotFile bf, AuditFile af) {
+    public IRElection(BallotFile bf) {
         this.bf = bf;
-        this.af = af;
     }
 
     @Override

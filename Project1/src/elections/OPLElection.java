@@ -12,7 +12,6 @@ public class OPLElection implements Election {
     private int num_ballots_line_num;
     private int ballot_start_line_num;
     private BallotFile bf;
-    private AuditFile af;
     private int num_candidates;
     private int num_seats;
     private int num_ballots;
@@ -22,9 +21,8 @@ public class OPLElection implements Election {
     private Set<Candidate> winning_candidates;
     private Set<Party> winning_parties;
 
-    public OPLElection(BallotFile bf, AuditFile af) {
+    public OPLElection(BallotFile bf) {
         this.bf = bf;
-        this.af = af;
         this.num_candidate_line_num = 2;
         this.candidates_line_num = 3;
         this.num_seats_line_num = 4;
@@ -32,13 +30,11 @@ public class OPLElection implements Election {
     }
 
     public OPLElection(BallotFile bf,
-                       AuditFile af,
                        int num_candidates_line_num,
                        int candidates_line_num,
                        int num_ballots_line_num,
                        int ballot_start_line_num) {
         this.bf = bf;
-        this.af = af;
         this.num_candidate_line_num = num_candidates_line_num;
         this.candidates_line_num = candidates_line_num;
         this.num_ballots_line_num = num_ballots_line_num;
