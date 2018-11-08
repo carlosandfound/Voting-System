@@ -37,6 +37,10 @@ public class BallotFile {
         return data.get(line_num - 1);
     }
 
+    public int getNumLines() {
+        return data.size();
+    }
+
     public String getElectionType() {
         return getLine(1);
     }
