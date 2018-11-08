@@ -3,7 +3,9 @@ package elections;
 import fileio.AuditFile;
 import fileio.BallotFile;
 
-public class IRElection implements Election{
+import java.util.Set;
+
+public class IRElection implements Election {
 
     BallotFile bf;
     AuditFile af;
@@ -19,12 +21,12 @@ public class IRElection implements Election{
     }
 
     @Override
-    public void getCandidateWinners() {
-
+    public Set<Candidate> getCandidateWinners() {
+        return null;
     }
 
     @Override
-    public void getPartyWinners() {
-
+    public Set<Party> getPartyWinners() {
+        return null;
     }
 }
