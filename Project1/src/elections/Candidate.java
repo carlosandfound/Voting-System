@@ -25,11 +25,11 @@ public class Candidate {
         return party;
     }
 
-    public int getNum_votes() {
+    public int getNumVotes() {
         return num_votes;
     }
 
-    public List<Integer> getAcquired_ballots() {
+    public List<Integer> getAcquiredBallots() {
         return acquired_ballots;
     }
 
