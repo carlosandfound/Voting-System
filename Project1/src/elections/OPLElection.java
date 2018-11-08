@@ -63,13 +63,13 @@ public class OPLElection implements Election {
     }
 
     @Override
-    public void getCandidateWinners() {
-
+    public Set<Candidate> getCandidateWinners() {
+        return null;
     }
 
     @Override
-    public void getPartyWinners() {
-
+    public Set<Party> getPartyWinners() {
+        return null;
     }
 
     private void populateCandidates() {
