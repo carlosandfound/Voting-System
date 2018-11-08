@@ -45,9 +45,14 @@ class BallotFileTest {
     }
 
     @Test
+    void getLineLastLine() {
+        assertEquals(",1,,,,", bf.getLine(bf.getNumLines()));
+    }
+
+    @Test
     void getLineDoesNotExist() {
         assertThrows(IndexOutOfBoundsException.class, () -> {
-            bf.getLine(300);
+            bf.getLine(bf.getNumLines() + 1);
         });
     }
 
