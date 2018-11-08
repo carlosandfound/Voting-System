@@ -10,22 +10,16 @@ public class BallotFile {
     private String filename;
     private List<String> data;
 
-    public BallotFile(File ballot_file) {
+    public BallotFile(File ballot_file) throws IOException {
         this.filename = ballot_file.getName();
         this.data = new ArrayList<>();
-        try {
-            FileInputStream bf_input_stream = new FileInputStream(ballot_file);
-            BufferedReader br = new BufferedReader(new InputStreamReader(bf_input_stream));
+        FileInputStream bf_input_stream = new FileInputStream(ballot_file);
+        BufferedReader br = new BufferedReader(new InputStreamReader(bf_input_stream));
 
-            // TODO: perhaps read the entire file just once instead of multiple times to save time?
-            String line;
-            while ((line = br.readLine()) != null) {
-                data.add(line);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        // TODO: perhaps read the entire file just once instead of multiple times to save time?
+        String line;
+        while ((line = br.readLine()) != null) {
+            data.add(line);
         }
     }
 
