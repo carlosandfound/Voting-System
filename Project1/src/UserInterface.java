@@ -1,6 +1,4 @@
-package ui;
 
-import elections.*;
 import java.io.*;
 
 public class UserInterface {
