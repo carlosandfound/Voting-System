@@ -20,7 +20,7 @@ public class VotingSystem {
                 if (bf.getElectionType().equals("OPL")) {
                     el = new OPLElection(bf);
                     not_valid_file = false;
-                } else if (bf.getElectionType().equals("IRV")) {
+                } else if (bf.getElectionType().equals("IR")) {
                     el = new IRElection(bf);
                     not_valid_file = false;
                 } else {
