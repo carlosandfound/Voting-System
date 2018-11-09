@@ -1,4 +1,3 @@
-package elections;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,15 +1,12 @@
 
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,7 +45,7 @@ class BallotFileTest {
 
     @Test
     void getFilenameSuccess() {
-        assertEquals("simple_opl_ballot_file.csv", bf.getFilename());
+        Assertions.assertEquals("simple_opl_ballot_file.csv", bf.getFilename());
     }
 
     @Test
@@ -58,7 +55,7 @@ class BallotFileTest {
 
     @Test
     void getLine3SimpleOPLSuccess() {
-        assertEquals("[Pike,D], [Foster,D],[Deutsch,R], [Borg,R], [Jones,R],[Smith,I]",
+        Assertions.assertEquals("[Pike,D], [Foster,D],[Deutsch,R], [Borg,R], [Jones,R],[Smith,I]",
                 bf.getLine(3));
     }
 
@@ -70,7 +67,7 @@ class BallotFileTest {
 
     @Test
     void getLineLastLine() {
-        assertEquals(",1,,,,", bf.getLine(bf.getNumLines()));
+        Assertions.assertEquals(",1,,,,", bf.getLine(bf.getNumLines()));
     }
 
     @Test
@@ -82,7 +79,7 @@ class BallotFileTest {
 
     @Test
     void getElectionTypeOPLSuccess() {
-        assertEquals("OPL", bf.getElectionType());
+        Assertions.assertEquals("OPL", bf.getElectionType());
     }
 
     @Test

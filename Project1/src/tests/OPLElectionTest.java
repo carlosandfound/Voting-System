@@ -1,4 +1,4 @@
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -37,22 +37,22 @@ class OPLElectionTest {
 
     @Test
     void getNumCandidatesSimpleOPL() {
-        assertEquals(6, e.getNumCandidates());
+        Assertions.assertEquals(6, e.getNumCandidates());
     }
 
     @Test
     void getNumSeatsSimpleOPL() {
-        assertEquals(3, e.getNumSeats());
+        Assertions.assertEquals(3, e.getNumSeats());
     }
 
     @Test
     void getNumBallotsSimpleOPL() {
-        assertEquals(9, e.getNumBallots());
+        Assertions.assertEquals(9, e.getNumBallots());
     }
 
     @Test
     void getQuotaSimpleOPL() {
-        assertEquals(3, e.getQuota());
+        Assertions.assertEquals(3, e.getQuota());
     }
 
     @Test
