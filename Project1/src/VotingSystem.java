@@ -31,7 +31,6 @@ public class VotingSystem {
                 ui.displayExceptionMessage(e, System.out);
             }
         }
-        el.runElection();
         ui.displayResults(el, System.out);
     }
 }
