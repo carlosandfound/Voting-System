@@ -61,6 +61,9 @@ public class OPLElection implements Election {
 
     @Override
     public String toString() {
+        if (!has_been_run) {
+            runElection();
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("Election Type: OPL\n");
         sb.append("Number of candidates: ").append(num_candidates).append("\n");
