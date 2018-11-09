@@ -23,7 +23,6 @@ public class OPLElection implements Election {
     private Party[] parties;
     private Set<Candidate> candidate_winners;
     private Set<Party> party_winners;
-
     private boolean has_been_run;
 
     public OPLElection(BallotFile bf) {
@@ -60,12 +59,24 @@ public class OPLElection implements Election {
         return parties;
     }
 
+    //TODO: Implement runElection()
+    // Preconditions: an instance of OPLElection has been constructed with a valid BallotFile
+    /*
+        Postconditions:
+            Each Candidate within "candidates" has the correct number of votes and list of acquired ballots.
+            Each Party within "parties" has the correct number of votes, list of acquired ballots, and number of seats
+            Member variable "candidate_winners" contains all candidates that have acquired a seat.
+            Member variable "party_winners" contains all parties that have at least 1 seat.
+     */
     @Override
     public void runElection() {
         if (has_been_run) {
+            // Prevent "running" the election more than once
             return;
         }
-
+        /*
+            Algorithm for OPL Elections goes here
+         */
         has_been_run = true;
     }
 
@@ -74,7 +85,7 @@ public class OPLElection implements Election {
         if (!has_been_run) {
             runElection();
         }
-        return null;
+        return candidate_winners;
     }
 
     @Override
@@ -82,7 +93,7 @@ public class OPLElection implements Election {
         if (!has_been_run) {
             runElection();
         }
-        return null;
+        return party_winners;
     }
 
     private void populateCandidatesAndParties() {
@@ -114,6 +125,9 @@ public class OPLElection implements Election {
         }
     }
 
+    /*
+        Possible good helper methods to use within "runElection()"
+     */
     private void voteFor(int candidate_id, int ballot_id) {
 
     }
