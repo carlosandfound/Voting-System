@@ -82,7 +82,6 @@ class OPLElectionTest {
     @Test
     void getPartiesNamesSimpleOPL() {
         String[] expected_parties = {"D", "R", "I"};
-        int[] expected_num_candidates = {2, 3, 1};
         Party[] parties = e.getParties();
         for (int i = 0; i < parties.length; i++) {
             Party p = parties[i];
