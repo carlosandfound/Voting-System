@@ -1,5 +1,3 @@
-package elections;
-
 import java.util.Set;
 
 public interface Election {
