@@ -1,10 +1,27 @@
+/*
+ * File: VotingSystem.java
+ *
+ * Description: this file contains the class that contains the "main()" method of the "Voting System" product. This class
+ * is the main driver of the entire program.
+ *
+ * Author: Justin Koo
+ */
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 
+/**
+ * <h1>VotingSystem</h1>
+ * <h2>Purpose</h2>
+ * The VotingSystem class is the wrapper class for the "main()" method of the "Voting System" product.
+ */
 public class VotingSystem {
 
+    /**
+     * Provides an entry point for the execution of the "Voting System" product.
+     * @param args A {@code String[]} specifying arguments provided during program execution. Currently none are required.
+     */
     public static void main(String[] args) {
         UserInterface ui = new UserInterface();
         boolean not_valid_file = true;
