@@ -1,3 +1,4 @@
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -23,7 +24,6 @@ public class VotingSystem {
                     ui.displayInvalidElectionType(bf.getElectionType(), System.out);
                 }
             } catch (IOException e) {
-                // TODO: handle cases in which an IOException is thrown, e.g. when the filename entered does not exist
                 ui.displayExceptionMessage(e, System.out);
             }
         }
