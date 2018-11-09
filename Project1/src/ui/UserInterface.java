@@ -5,7 +5,8 @@ import java.io.*;
 
 public class UserInterface {
 
-    public String requestBallotFilename(String request, OutputStream out, InputStream in) {
+    public String requestBallotFilename(OutputStream out, InputStream in) {
+        String request = "Enter a ballot filename: ";
         try {
             out.write(request.getBytes());
         } catch (IOException e) {
@@ -19,6 +20,24 @@ public class UserInterface {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void displayInvalidElectionType(String unexpected_election_type, OutputStream out) {
+        String display = "Detected election type as " + unexpected_election_type + ". Election type must be IR or OPL\n";
+        try {
+            out.write(display.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void displayExceptionMessage(Exception ex, OutputStream out) {
+        try {
+            out.write(ex.getMessage().getBytes());
+            out.write("\n".getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
