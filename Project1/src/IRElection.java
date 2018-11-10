@@ -137,13 +137,13 @@ public class IRElection implements Election {
                 int rank = Integer.parseInt(ballot[i]);
                 ballots[row][rank-1] = i;
                 if (rank == 1) {
-                    voteFor(i, rank, row);
+                    voteFor(i, row);
                 }
             }
         }
     }
 
-    private void voteFor(int candidates_id, int rank, int ballot_id) {
+    private void voteFor(int candidates_id, int ballot_id) {
         candidates[candidates_id].acquireBallot(ballot_id);
         if (candidates[candidates_id].getNumVotes() >= majority_criteria) {
             winning_candidate_id = candidates_id;
@@ -181,7 +181,7 @@ public class IRElection implements Election {
             for (int j = 1; j < num_candidates; j++) {
                 int winning_cand_id = ballots[loser_ballot_id][j];
                 if (surviving_candidate_ids.contains(winning_cand_id)) {
-                    voteFor(winning_cand_id, j+1, loser_ballot_id);
+                    voteFor(winning_cand_id, loser_ballot_id);
                 }
             }
         }
