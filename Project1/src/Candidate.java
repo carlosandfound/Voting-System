@@ -1,3 +1,10 @@
+/*
+ * File: Candidate.java
+ *
+ * Description: this file contains the class implementation for the Candidate class used in the "Voting System" product
+ *
+ * Author: Carlos Alvarenga, Justin Koo
+ */
 import java.util.ArrayList;
 import java.util.List;
 
