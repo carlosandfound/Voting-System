@@ -4,7 +4,7 @@
  * Description: this file contains the class that contains the "main()" method of the "Voting System" product. This class
  * is the main driver of the entire program.
  *
- * Author: Justin Koo
+ * Author: Carlos Alvarenga, Justin Koo
  */
 
 import java.io.File;
@@ -36,11 +36,13 @@ public class VotingSystem {
                     not_valid_file = false;
                 } else if (bf.getElectionType().equals("IR")) {
                     el = new IRElection(bf);
+                    el.runElection();
                     not_valid_file = false;
                 } else {
                     ui.displayInvalidElectionType(bf.getElectionType(), System.out);
                 }
             } catch (IOException e) {
+                                // TODO: handle cases in which an IOException is thrown, e.g. when the filename entered does not exist
                 ui.displayExceptionMessage(e, System.out);
             }
         }
