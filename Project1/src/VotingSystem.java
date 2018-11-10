@@ -42,7 +42,6 @@ public class VotingSystem {
                     ui.displayInvalidElectionType(bf.getElectionType(), System.out);
                 }
             } catch (IOException e) {
-                                // TODO: handle cases in which an IOException is thrown, e.g. when the filename entered does not exist
                 ui.displayExceptionMessage(e, System.out);
             }
         }
