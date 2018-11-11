@@ -16,6 +16,13 @@ import java.io.*;
 public class UserInterface {
 
     /**
+     * Initializes an instance of the "Voting System" user interface.
+     */
+    public UserInterface() {
+        // No initializations necessary
+    }
+
+    /**
      * Prompts the system user for the filename of the specific ballot file they wish to process.
      * @param out An {@code OutputStream} through which the request is made.
      * @param in An {@code InputStream} through which the user provides the request response.
@@ -73,27 +80,8 @@ public class UserInterface {
      * @param out An {@code OutputStream} where the election results are written to.
      */
     public void displayResults(Election e, OutputStream out) {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("The winning parties are:\n");
-        for (Party p : e.getPartyWinners()) {
-            sb.append(p.getName()).append(" with ").append(p.getNumVotes()).append(" votes\n");
-        }
-
-        sb.append("\nThe winning candidates are:\n");
-        for (Candidate c : e.getCandidateWinners()) {
-            sb.append(c.getName())
-                    .append(" (")
-                    .append(c.getParty())
-                    .append(") ")
-                    .append("with ")
-                    .append(c.getNumVotes())
-                    .append(" votes\n");
-        }
-
-        String result = sb.toString();
         try {
-            out.write(result.getBytes());
+            out.write(e.toString().getBytes());
         } catch (IOException e1) {
             e1.printStackTrace();
         }
