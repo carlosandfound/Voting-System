@@ -164,6 +164,9 @@ public class OPLElection implements Election {
         return party_winners;
     }
 
+    /*
+     * Returns the election parameters: type, number of candidates, candidates, numbers of seats, and number of ballots
+     */
     private String electionInfoToString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Election Type: OPL\n");
