@@ -1,8 +1,20 @@
-import java.util.HashMap;
+/*
+ * File: OPLElection.java
+ *
+ * Description: this file contains the class implementation for the OPLElection class used in the "Voting System" product
+ *
+ * Authors: Justin Koo, Michael McLaughlin
+ */
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * <h1>OPLElection</h1>
+ * <h2>Purpose</h2>
+ * The OPLElection class provides methods to obtain the results of an OPL election specified by some {@code BallotFile}.
+ */
 public class OPLElection implements Election {
 
     private static final int num_candidate_line_num = 2;
@@ -21,6 +33,10 @@ public class OPLElection implements Election {
     private Set<Party> party_winners;
     private boolean has_been_run;
 
+    /**
+     * Initializes an {@code OPLElection} with the proper OPL election parameters specified in {@code bf}.
+     * @param bf A {@code BallotFile} object representing the ballot file to be considered.
+     */
     public OPLElection(BallotFile bf) {
         this.bf = bf;
         this.has_been_run = false;
@@ -31,30 +47,59 @@ public class OPLElection implements Election {
         populateCandidatesAndParties();
     }
 
+    /**
+     * Method to obtain the number of candidates present in an {@code OPLElection} instance.
+     * @return An {@code int} denoting the number of candidates in the election.
+     */
     public int getNumCandidates() {
         return num_candidates;
     }
 
+    /**
+     * Method to obtain the number of seats available in an {@code OPLElection} instance.
+     * @return An {@code int} denoting the number of seats available in the election.
+     */
     public int getNumSeats() {
         return num_seats;
     }
 
+    /**
+     * Method to obtain the number of ballots cast in an {@code OPLElection} instance.
+     * @return An {@code int} denoting the number of ballots cast in the election.
+     */
     public int getNumBallots() {
         return num_ballots;
     }
 
+    /**
+     * Method to obtain the quota for an {@code OPLElection} instance. The quota denotes the number of ballots any party
+     * must obtain in order to receive 1 additional seat.
+     * @return An {@code int} denoting the quota for the election.
+     */
     public int getQuota() {
         return quota;
     }
 
+    /**
+     * Method to obtain all candidates present in an {@code OPLElection} instance.
+     * @return A {@code Candidate[]} containing all {@code Candidate} objects present in the election.
+     */
     public Candidate[] getCandidates() {
         return candidates;
     }
 
+    /**
+     * Method to obtain all parties present in an {@code OPLElection} instance.
+     * @return A {@code Party[]} containing all {@code Party} objects present in the election.
+     */
     public Party[] getParties() {
         return parties;
     }
 
+    /**
+     * Method to obtain the results of an {@code OPLElection} instance.
+     * @return A {@code String} containing a short description of the election parameters as well as winners.
+     */
     @Override
     public String toString() {
         if (!has_been_run) {
@@ -97,6 +142,11 @@ public class OPLElection implements Election {
             Member variable "candidate_winners" contains all candidates that have acquired a seat.
             Member variable "party_winners" contains all parties that have at least 1 seat.
      */
+
+    /**
+     * Method to run the primary algorithm of OPL elections. The {@code OPLElection} class is designed such that
+     * the algorithm is executed only once per instance of {@code OPLElection}.
+     */
     @Override
     public void runElection() {
         if (has_been_run) {
@@ -109,6 +159,11 @@ public class OPLElection implements Election {
         has_been_run = true;
     }
 
+    /**
+     * Method to obtain the winning candidates of an {@code OPLElection} instance. A candidate is determined to be a winner
+     * if it has won a seat in the election.
+     * @return A {@code Set} containing all {@code Candidate} objects that have been determined to be winners.
+     */
     @Override
     public Set<Candidate> getCandidateWinners() {
         if (!has_been_run) {
@@ -117,6 +172,11 @@ public class OPLElection implements Election {
         return candidate_winners;
     }
 
+    /**
+     * Method to obtain the winning parties of an {@code OPLElection} instance. A party is determined to be a winner if
+     * it has won at least 1 seat in the election.
+     * @return A {@code Set} containing all {@code Party} objects that have been determined to be winners.
+     */
     @Override
     public Set<Party> getPartyWinners() {
         if (!has_been_run) {
