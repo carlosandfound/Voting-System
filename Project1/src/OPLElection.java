@@ -106,30 +106,9 @@ public class OPLElection implements Election {
             runElection();
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("Election Type: OPL\n");
-        sb.append("Number of candidates: ").append(num_candidates).append("\n");
-        sb.append("Candidates: ");
-        for (int i = 0; i < getNumCandidates(); i++) {
-            Candidate c = candidates[i];
-            sb.append("[").append(c.getName()).append(", ").append(c.getParty()).append("]");
-            if (i < num_candidates - 1) {
-                sb.append(", ");
-            }
-        }
-        sb.append("\n");
-        sb.append("Number of available seats: ").append(num_seats).append("\n");
-        sb.append("Number of ballots cast: ").append(num_ballots).append("\n");
-
-        sb.append("Winning parties (atleast 1 seat won):");
-        for (Party p : party_winners) {
-            // TODO: append party winners and seats won
-        }
-
-        sb.append("Winning candidates:");
-        for (Candidate c : candidate_winners) {
-            // Todo: append candidate winners and votes received
-        }
-
+        sb.append(electionInfoToString());
+        sb.append(partyWinnersInfoToString());
+        sb.append(candidateWinnersInfoToString());
         return sb.toString();
     }
 
@@ -154,7 +133,7 @@ public class OPLElection implements Election {
             return;
         }
         /*
-            Algorithm for OPL Elections goes here
+            Algorithm for OPL Elections goes here.
          */
         has_been_run = true;
     }
@@ -183,6 +162,48 @@ public class OPLElection implements Election {
             runElection();
         }
         return party_winners;
+    }
+
+    private String electionInfoToString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Election Type: OPL\n");
+        sb.append("Number of candidates: ").append(num_candidates).append("\n");
+        sb.append("Candidates: ");
+        for (int i = 0; i < getNumCandidates(); i++) {
+            Candidate c = candidates[i];
+            sb.append("[").append(c.getName()).append(", ").append(c.getParty()).append("]");
+            if (i < num_candidates - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("\n");
+        sb.append("Number of available seats: ").append(num_seats).append("\n");
+        sb.append("Number of ballots cast: ").append(num_ballots).append("\n");
+        return sb.toString();
+    }
+
+    private String partyWinnersInfoToString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Winning parties (atleast 1 seat won):");
+        int party_num = 0;
+        for (Party p : party_winners) {
+            sb.append(p.getName()).append(": ").append(p.getNumSeats()).append(" seats won");
+            sb.append("\n");
+            party_num++;
+        }
+        return sb.toString();
+    }
+
+    private String candidateWinnersInfoToString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Winning candidates:");
+        int candidate_num = 0;
+        for (Candidate c : candidate_winners) {
+            sb.append(c.getName());
+            sb.append("\n");
+            candidate_num++;
+        }
+        return sb.toString();
     }
 
     private void populateCandidatesAndParties() {
