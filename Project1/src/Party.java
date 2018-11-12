@@ -15,7 +15,6 @@ public class Party {
         this.num_candidates = num_candidates;
         this.num_seats = 0;
         this.num_votes = 0;
-        this.num_remaining_votes = 0;
         this.acquired_ballots = new ArrayList<Integer>();
     }
 
@@ -35,10 +34,6 @@ public class Party {
         return num_votes;
     }
 
-    public int getNumRemainingVotes() {
-        return num_remaining_votes;
-    }
-
     public List<Integer> getAcquiredBallots() {
         return acquired_ballots;
     }
@@ -46,6 +41,8 @@ public class Party {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setNumSeats(int num_seats) { this.num_seats = num_seats; };
 
     public void setNumCandidates(int num_candidates) {
         this.num_candidates = num_candidates;
