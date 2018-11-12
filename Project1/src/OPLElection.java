@@ -6,9 +6,8 @@
  * Authors: Justin Koo, Michael McLaughlin
  */
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.nio.file.FileSystems;
+import java.util.*;
 
 /**
  * <h1>OPLElection</h1>
@@ -29,6 +28,7 @@ public class OPLElection implements Election {
     private int quota;
     private Candidate[] candidates;
     private Party[] parties;
+    private Map<String, Integer> party_ids;
     private Set<Candidate> candidate_winners;
     private Set<Party> party_winners;
     private boolean has_been_run;
@@ -44,6 +44,8 @@ public class OPLElection implements Election {
         this.num_seats = Integer.parseInt(bf.getLine(num_seats_line_num));
         this.num_ballots = Integer.parseInt(bf.getLine(num_ballots_line_num));
         this.quota = this.num_ballots / this.num_seats; // TODO: divide by zero error possible here
+        this.party_winners = new HashSet<>();
+        this.candidate_winners = new HashSet<>();
         populateCandidatesAndParties();
     }
 
@@ -132,10 +134,21 @@ public class OPLElection implements Election {
             // Prevent "running" the election more than once
             return;
         }
-        /*
-            Algorithm for OPL Elections goes here.
-         */
         has_been_run = true;
+        // Allocate votes of each ballot to the candidates and the parties they belong to.
+        for (int line = ballot_start_line_num; line <= bf.getNumLines(); line++) {
+            int ballot_id = line - ballot_start_line_num;
+            String ballot = bf.getLine(line);
+            int candidate_id_of_ballot = ballotToCandidateId(ballot);
+            voteFor(candidate_id_of_ballot, ballot_id);
+        }
+
+        sortCandidatesOnVotes();
+        sortPartiesOnRemainingVotes();
+
+        calculateSeatsForParties();
+        calculatePartyWinners();
+        calculateCandidateWinners();
     }
 
     /**
@@ -187,30 +200,38 @@ public class OPLElection implements Election {
 
     private String partyWinnersInfoToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Winning parties (atleast 1 seat won):");
-        int party_num = 0;
+        sb.append("Winning parties (atleast 1 seat won):\n");
         for (Party p : party_winners) {
-            sb.append(p.getName()).append(": ").append(p.getNumSeats()).append(" seats won");
-            sb.append("\n");
-            party_num++;
+            sb.append(p.getName())
+                    .append(": ")
+                    .append(p.getNumSeats())
+                    .append(" seats won")
+                    .append(" - ")
+                    .append(p.getNumVotes())
+                    .append(" total votes")
+                    .append("\n");
         }
         return sb.toString();
     }
 
     private String candidateWinnersInfoToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Winning candidates:");
-        int candidate_num = 0;
+        sb.append("Winning candidates:\n");
         for (Candidate c : candidate_winners) {
-            sb.append(c.getName());
-            sb.append("\n");
-            candidate_num++;
+            sb.append(c.getName())
+                    .append(", ")
+                    .append(c.getParty())
+                    .append(" - ")
+                    .append(c.getNumVotes())
+                    .append(" total votes")
+                    .append("\n");
         }
         return sb.toString();
     }
 
     private void populateCandidatesAndParties() {
         this.candidates = new Candidate[this.num_candidates];
+        this.party_ids = new HashMap<>();
         Map<String, Integer> party_candidate_counts = new LinkedHashMap<>(); // LinkedHashMap to preserve ordering of key insertions
         String candidate_line = bf.getLine(candidates_line_num);
         String[] names_and_parties = candidate_line.split("]");
@@ -233,6 +254,7 @@ public class OPLElection implements Election {
         this.parties = new Party[party_candidate_counts.size()];
         int party_id = 0;
         for (String party : party_candidate_counts.keySet()) {
+            party_ids.put(party, party_id);
             parties[party_id] = new Party(party, party_candidate_counts.get(party));
             party_id++;
         }
@@ -241,15 +263,99 @@ public class OPLElection implements Election {
     /*
         Possible good helper methods to use within "runElection()"
      */
-    private void voteFor(int candidate_id, int ballot_id) {
+    private void calculateCandidateWinners() {
+        for (Party p : parties) {
+            int num_seats_for_party_left = p.getNumSeats();
+            int candidate_id = 0;
+            while (num_seats_for_party_left > 0 && candidate_id < candidates.length) {
+                if (candidates[candidate_id].getParty().equals(p.getName())) {
+                    candidate_winners.add(candidates[candidate_id]);
+                    num_seats_for_party_left--;
+                }
+                candidate_id++;
+            }
+        }
+    }
 
+    private void calculatePartyWinners() {
+        for (Party p : parties) {
+            if (p.getNumSeats() > 0) {
+                party_winners.add(p);
+            }
+        }
+    }
+
+    private void calculateSeatsForParties() {
+        int num_remaining_seats = num_seats;
+        for (int party_id = 0; party_id < parties.length; party_id++) {
+            parties[party_id].setNumSeats(parties[party_id].getNumVotes() / quota);
+            num_remaining_seats -= parties[party_id].getNumVotes() / quota;
+        }
+        int party_id = 0;
+        while (num_remaining_seats > 0) {
+            parties[party_id].setNumSeats(parties[party_id].getNumSeats() + 1);
+            num_remaining_seats--;
+            party_id++;
+        }
+    }
+
+    private int ballotToCandidateId(String ballot) {
+        String[] ballot_array = ballot.split(",");
+        for (int i = 0; i < ballot_array.length; i++) {
+            if (ballot_array[i].equals("1")) {
+                return i;
+            }
+        }
+        throw new IllegalStateException();
+    }
+
+    private void voteFor(int candidate_id, int ballot_id) {
+        candidates[candidate_id].acquireBallot(ballot_id);
+        String party = candidates[candidate_id].getParty();
+        int party_id = party_ids.get(party);
+        parties[party_id].acquireBallot(ballot_id);
     }
 
     private void sortPartiesOnRemainingVotes() {
+        // Bubble sort the parties based on number of remaining votes from highest to lowest
+        for (int i = parties.length - 1; i >= 0; i--) {
+            for (int j = 0; j < 1; j++) {
+                if (parties[j].getNumVotes() % quota < parties[j+1].getNumVotes() % quota) {
+                    Party temp = parties[j];
+                    parties[j] = parties[j+1];
+                    parties[j+1] = temp;
+                } else if (parties[j].getNumVotes() % quota == parties[j+1].getNumVotes() % quota) {
+                    // Case where there is a tie. Choose a random party to be ahead in the ordering
+                    int rand = (int)(Math.random()*2);
+                    if (rand == 0) {
+                        Party temp = parties[j];
+                        parties[j] = parties[j+1];
+                        parties[j+1] = temp;
+                    }
+                }
+            }
+        }
 
     }
 
     private void sortCandidatesOnVotes() {
-
+        // Bubble sort the candidates based on number of votes acquired from highest to lowest
+        for (int i = candidates.length - 1; i >= 0; i--) {
+            for (int j = 0; j < i; j++) {
+                if (candidates[j].getNumVotes() < candidates[j+1].getNumVotes()) {
+                    Candidate temp = candidates[j];
+                    candidates[j] = candidates[j+1];
+                    candidates[j+1] = temp;
+                } else if (candidates[j].getNumVotes() == candidates[j+1].getNumVotes()) {
+                    // Case in which there is a tie. Chose a random candidate to be ahead in the order.
+                    int rand = (int)(Math.random()*2);
+                    if (rand == 0) {
+                        Candidate temp = candidates[j];
+                        candidates[j] = candidates[j+1];
+                        candidates[j+1] = temp;
+                    }
+                }
+            }
+        }
     }
 }
