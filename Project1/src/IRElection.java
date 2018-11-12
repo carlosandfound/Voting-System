@@ -6,7 +6,12 @@
  * Author: Carlos Alvarenga
  */
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class IRElection implements Election {
     private BallotFile bf;
@@ -18,6 +23,8 @@ public class IRElection implements Election {
     private int minority_criteria;
     private int winning_candidate_id;
     private boolean has_been_run;
+    private StringBuffer data;
+    private StringBuffer audit_filename;
 
     private int[][] ballots;
     private Candidate[] candidates;
@@ -38,6 +45,8 @@ public class IRElection implements Election {
         this.num_ballots = Integer.parseInt(bf.getLine(num_ballots_line_num));
         this.majority_criteria = (num_ballots/2) + 1;
         this.minority_criteria = majority_criteria;
+        this.data = new StringBuffer();
+        audit_filename = new StringBuffer();
         this.ballots = new int[num_ballots][num_candidates];
         this.candidates = new Candidate[num_candidates];
         this.winning_candidate_id = -1;
@@ -52,6 +61,7 @@ public class IRElection implements Election {
     @Override
     public void runElection() {
         if (!has_been_run) {
+            data.append(electionInfotoString());
             this.populateCandidates();
             int ballot_id = 0;
             for (int i = ballots_start_line_num; i < num_ballots + ballots_start_line_num; i++) {
@@ -74,6 +84,8 @@ public class IRElection implements Election {
             surviving_candidates.add(candidates[winning_candidate_id]);
             Party winning_party = new Party(candidates[winning_candidate_id].getParty(), 1);
             surviving_parties.add(winning_party);
+            gatherWinnerInfo(winning_candidate_id);
+            writeToAuditFile();
             has_been_run = true;
         }
     }
@@ -104,10 +116,7 @@ public class IRElection implements Election {
             runElection();
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("Election Type: IR\n");
-        sb.append("Number of candidates: ").append(num_candidates).append("\n");
-        sb.append("Candidates: ").append(bf.getLine(3)).append("\n");
-        sb.append("Number of ballots: ").append(num_ballots).append("\n");
+        sb.append(electionInfotoString());
         sb.append("Winning candidate: ");
         sb.append(surviving_candidates.iterator().next().getName());
         sb.append(" (").append(surviving_parties.iterator().next().getName()).append(")");
@@ -117,6 +126,27 @@ public class IRElection implements Election {
             sb.append(" vote\n");
         else
             sb.append(" votes\n");
+        sb.append("The audit file '").append(getAuditFileName()).append("'").append(" has been generated\n");
+        return sb.toString();
+    }
+
+    public String getAuditFileName() {
+        return audit_filename.toString();
+    }
+
+
+    private String electionInfotoString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Election Type: IR\n");
+        sb.append("Number of candidates: ").append(num_candidates).append("\n");
+        sb.append("Candidates: ").append(bf.getLine(3)).append("\n");
+        sb.append("Number of ballots: ").append(num_ballots).append("\n");
+        return sb.toString();
+    }
+
+    private String candidateInfotoString(int candidates_id) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(candidates[candidates_id].getName()).append(" (").append(candidates[candidates_id].getParty()).append(")");
         return sb.toString();
     }
 
@@ -155,15 +185,16 @@ public class IRElection implements Election {
                 int rank = Integer.parseInt(ballot[i]);
                 ballots[ballot_id][rank-1] = i;
                 if (rank == 1) // only vote for first place candidate
-                    voteFor(ballot_id, i);
+                    voteFor(ballot_id, i, rank);
             }
         }
     }
 
-    private void voteFor(int ballot_id, int candidate_id) {
+    private void voteFor(int ballot_id, int candidate_id, int rank) {
         candidates[candidate_id].acquireBallot(ballot_id);
         int candidate_votes = candidates[candidate_id].getNumVotes();
         votes.set(candidate_id, candidate_votes);
+        gatherVotingInfo(ballot_id, candidate_id, rank);
     }
 
     private void findMajority(Set<Integer> surviving_candidate_ids) {
@@ -188,19 +219,24 @@ public class IRElection implements Election {
             }
         }
         if (loser_candidate_ids.size() == 1) {
-            return loser_candidate_ids.iterator().next();
+            int loser_id = loser_candidate_ids.iterator().next();
+            gatherLoserInfo(loser_candidate_ids, loser_id);
+            return loser_id;
         }
         return randomLoser(loser_candidate_ids);
     }
 
-    private void reallocateVotes(int candidates_id) {
-        loser_ballot_ids = candidates[candidates_id].getAcquiredBallots();
+    private void reallocateVotes(int loser_id) {
+        loser_ballot_ids = candidates[loser_id].getAcquiredBallots();
+        int votes_reallocated = 0;
         for (int i = 0; i < loser_ballot_ids.size(); i++) {
             int loser_ballot_id = loser_ballot_ids.get(i);
             for (int j = 1; j < num_candidates; j++) {
-                int winning_cand_id = ballots[loser_ballot_id][j];
-                if (surviving_candidate_ids.contains(winning_cand_id)) {
-                    voteFor(loser_ballot_id, winning_cand_id);
+                int new_id = ballots[loser_ballot_id][j];
+                if (surviving_candidate_ids.contains(new_id)) {
+                    gatherReallocationVotingInfo(loser_id, new_id, votes_reallocated);
+                    voteFor(loser_ballot_id, new_id, j+1);
+                    votes_reallocated++;
                     j = num_candidates;
                 }
             }
@@ -219,6 +255,78 @@ public class IRElection implements Election {
         int low = 0;
         int high = losers.size();
         int loser_id = r.nextInt(high-low) + low;
+        gatherLoserInfo(losers, loser_id);
         return (losers.get(loser_id));
+    }
+
+    private void gatherVotingInfo(int ballot_id, int candidate_id, int rank) {
+        data.append("Candidate ").append(candidateInfotoString(candidate_id));
+        data.append(" has gained a vote in ballot ").append(ballot_id+1).append(" as rank ").append(rank).append(".\n");
+        data.append("Candidate ").append(candidateInfotoString(candidate_id));
+        data.append(" now has a total of ").append(candidates[candidate_id].getNumVotes()).append(" vote(s).\n");
+    }
+
+    private void gatherLoserInfo(List<Integer> losers, int loser_id) {
+        if (losers.size() == 1) {
+            data.append("Candidate ").append(candidateInfotoString(loser_id));
+            data.append(" has lost the election with ").append(minority_criteria).append(" vote(s).\n");
+        } else {
+            data.append("There are ").append(losers.size()).append(" candidates with ").append(minority_criteria).append(" votes(s).\n");
+            data.append("These candidates are ");
+            for (int i = 0; i < losers.size(); i++) {
+                if (i == losers.size() - 1)
+                    data.append(candidateInfotoString(losers.get(i))).append(".\n");
+                else
+                    data.append(candidateInfotoString(losers.get(i))).append(", ");
+            }
+            data.append("By random chance, candidate ").append(candidateInfotoString(loser_id));
+            data.append(" has lost the election with ").append(minority_criteria).append(" vote(s).\n");
+        }
+    }
+
+    private void gatherReallocationVotingInfo(int loser_id, int new_id, int votes_reallocated) {
+        if (votes_reallocated == 1) {
+            data.append("Reallocating the votes of ").append(loser_ballot_ids.size()).append(" ballot(s) from ");
+            data.append("losing candidate ").append(candidateInfotoString(loser_id)).append(".\n");
+        }
+        data.append("A vote has been reallocated from candidate ").append(candidateInfotoString(loser_id));
+        data.append(" to candidate ").append(candidateInfotoString(new_id)).append(".\n");
+    }
+
+    private void gatherWinnerInfo(int winner_id) {
+        data.append("Candidate ").append(candidateInfotoString(winner_id));
+        if (candidates[winner_id].getNumVotes() >=  minority_criteria) {
+            data.append(" has won the election with a majority of ");
+        } else {
+            data.append(" has won the election with ");
+        }
+        data.append(minority_criteria).append(" vote(s).\n");
+    }
+
+    private void writeToAuditFile() {
+        //StringBuffer filename = new StringBuffer();
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        audit_filename.append("audit_file_").append(timeStamp).append(".txt");
+        //System.out.println(filename);
+        
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        try {
+            fw = new FileWriter(String.valueOf(audit_filename));
+            bw = new BufferedWriter(fw);
+            bw.write(data.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null)
+                    bw.close();
+                if (fw != null)
+                    fw.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }
