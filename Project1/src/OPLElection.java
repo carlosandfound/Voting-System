@@ -132,12 +132,10 @@ public class OPLElection implements Election {
         return sb.toString();
     }
 
-    /**
-     * Method to run the primary algorithm of OPL elections. The {@code OPLElection} class is designed such that
-     * the algorithm is executed only once per instance of {@code OPLElection}.
+    /*
+     * Performs the algorithm to run an OPL election. This method modifies most of the member variables in the class
      */
-    @Override
-    public void runElection() {
+    private void runElection() {
         if (has_been_run) {
             // Prevent "running" the election more than once
             return;
