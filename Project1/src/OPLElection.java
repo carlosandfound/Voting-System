@@ -6,7 +6,10 @@
  * Authors: Justin Koo, Michael McLaughlin
  */
 
-import java.nio.file.FileSystems;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -22,6 +25,8 @@ public class OPLElection implements Election {
     private static final int num_ballots_line_num = 5;
     private static final int ballot_start_line_num = 6;
     private BallotFile bf;
+    StringBuffer audit_data;
+    StringBuffer audit_filename;
     private int num_candidates;
     private int num_seats;
     private int num_ballots;
@@ -43,9 +48,22 @@ public class OPLElection implements Election {
         this.num_candidates = Integer.parseInt(bf.getLine(num_candidate_line_num));
         this.num_seats = Integer.parseInt(bf.getLine(num_seats_line_num));
         this.num_ballots = Integer.parseInt(bf.getLine(num_ballots_line_num));
-        this.quota = this.num_ballots / this.num_seats; // TODO: divide by zero error possible here
+
+        /*
+         * Handle cases where there are 0 seats available or the quota is 0
+         */
+        if (num_seats == 0) {
+            this.quota = Integer.MAX_VALUE; // simulating "infinity" when divide by 0
+        } else {
+            this.quota = this.num_ballots / this.num_seats;
+        }
+        if (quota == 0) {
+            quota = Integer.MAX_VALUE; // turns the election into "most total votes wins" a seat
+        }
         this.party_winners = new HashSet<>();
         this.candidate_winners = new HashSet<>();
+        this.audit_data = new StringBuffer();
+        this.audit_filename = new StringBuffer();
         populateCandidatesAndParties();
     }
 
@@ -114,16 +132,6 @@ public class OPLElection implements Election {
         return sb.toString();
     }
 
-    //TODO: Implement runElection()
-    // Preconditions: an instance of OPLElection has been constructed with a valid BallotFile
-    /*
-        Postconditions:
-            Each Candidate within "candidates" has the correct number of votes and list of acquired ballots.
-            Each Party within "parties" has the correct number of votes, list of acquired ballots, and number of seats
-            Member variable "candidate_winners" contains all candidates that have acquired a seat.
-            Member variable "party_winners" contains all parties that have at least 1 seat.
-     */
-
     /**
      * Method to run the primary algorithm of OPL elections. The {@code OPLElection} class is designed such that
      * the algorithm is executed only once per instance of {@code OPLElection}.
@@ -134,6 +142,7 @@ public class OPLElection implements Election {
             // Prevent "running" the election more than once
             return;
         }
+        audit_data.append(electionInfoToString());
         has_been_run = true;
         // Allocate votes of each ballot to the candidates and the parties they belong to.
         for (int line = ballot_start_line_num; line <= bf.getNumLines(); line++) {
@@ -141,14 +150,18 @@ public class OPLElection implements Election {
             String ballot = bf.getLine(line);
             int candidate_id_of_ballot = ballotToCandidateId(ballot);
             voteFor(candidate_id_of_ballot, ballot_id);
+            audit_data.append("Ballot number ").append(ballot_id).append(" (line ").append(line).append(") ").append("goes to ")
+                    .append(candidates[candidate_id_of_ballot].getName()).append("\n");
         }
-
+        // Tabulate the results using a variety of helper methods
         sortCandidatesOnVotes();
         sortPartiesOnRemainingVotes();
-
         calculateSeatsForParties();
         calculatePartyWinners();
         calculateCandidateWinners();
+
+        addDetailedResultsToAuditData();
+        writeToAuditFile();
     }
 
     /**
@@ -178,6 +191,10 @@ public class OPLElection implements Election {
     }
 
     /*
+     * ALL private "helper" methods are below
+     */
+
+    /*
      * Returns the election parameters: type, number of candidates, candidates, numbers of seats, and number of ballots
      */
     private String electionInfoToString() {
@@ -195,9 +212,13 @@ public class OPLElection implements Election {
         sb.append("\n");
         sb.append("Number of available seats: ").append(num_seats).append("\n");
         sb.append("Number of ballots cast: ").append(num_ballots).append("\n");
+        sb.append("Quota for this election: ").append(quota).append("\n");
         return sb.toString();
     }
 
+    /*
+     * Returns a string denoting the party winners of the election along with the number of seats won.
+     */
     private String partyWinnersInfoToString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Winning parties (atleast 1 seat won):\n");
@@ -214,6 +235,9 @@ public class OPLElection implements Election {
         return sb.toString();
     }
 
+    /*
+     * Returns a string denoting the candidate winners of the election.
+     */
     private String candidateWinnersInfoToString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Winning candidates:\n");
@@ -229,13 +253,18 @@ public class OPLElection implements Election {
         return sb.toString();
     }
 
+    /*
+     * Initializes the member variables "candidates", "party_ids", and "parties".
+     */
     private void populateCandidatesAndParties() {
         this.candidates = new Candidate[this.num_candidates];
         this.party_ids = new HashMap<>();
         Map<String, Integer> party_candidate_counts = new LinkedHashMap<>(); // LinkedHashMap to preserve ordering of key insertions
+        // Parse the candidate line of the ballot file to obtain the names and parties of each candidate
         String candidate_line = bf.getLine(candidates_line_num);
         String[] names_and_parties = candidate_line.split("]");
         for (int i = 0; i < names_and_parties.length; i++) {
+            if (names_and_parties[0].equals("")) continue; // Handle case where there are 0 candidates
             String candidate = names_and_parties[i]; //, [Foster,D
             candidate = candidate.trim();
             candidate = candidate.substring(1); // [Foster,D
@@ -261,7 +290,7 @@ public class OPLElection implements Election {
     }
 
     /*
-        Possible good helper methods to use within "runElection()"
+     * Adds to, for each party, the candidates from that party to the set of winners for the election.
      */
     private void calculateCandidateWinners() {
         for (Party p : parties) {
@@ -277,6 +306,9 @@ public class OPLElection implements Election {
         }
     }
 
+    /*
+     * Adds to the set of party winners all winning parties
+     */
     private void calculatePartyWinners() {
         for (Party p : parties) {
             if (p.getNumSeats() > 0) {
@@ -285,6 +317,9 @@ public class OPLElection implements Election {
         }
     }
 
+    /*
+     * Calculates how many seats each party wins after remainders
+     */
     private void calculateSeatsForParties() {
         int num_remaining_seats = num_seats;
         for (int party_id = 0; party_id < parties.length; party_id++) {
@@ -292,13 +327,16 @@ public class OPLElection implements Election {
             num_remaining_seats -= parties[party_id].getNumVotes() / quota;
         }
         int party_id = 0;
-        while (num_remaining_seats > 0) {
+        while (num_remaining_seats > 0 && party_id < parties.length) {
             parties[party_id].setNumSeats(parties[party_id].getNumSeats() + 1);
             num_remaining_seats--;
             party_id++;
         }
     }
 
+    /*
+     * Returns an integer denoting the candidate a ballot has voted for.
+     */
     private int ballotToCandidateId(String ballot) {
         String[] ballot_array = ballot.split(",");
         for (int i = 0; i < ballot_array.length; i++) {
@@ -309,6 +347,9 @@ public class OPLElection implements Election {
         throw new IllegalStateException();
     }
 
+    /*
+     * Gives "ownership" of a certain ballot to a certain candidate and his/her party.
+     */
     private void voteFor(int candidate_id, int ballot_id) {
         candidates[candidate_id].acquireBallot(ballot_id);
         String party = candidates[candidate_id].getParty();
@@ -316,6 +357,10 @@ public class OPLElection implements Election {
         parties[party_id].acquireBallot(ballot_id);
     }
 
+    /*
+     * Modify the parties member variable by bubble sorting the parties based on number of remaining votes
+     * from highest to lowest.
+     */
     private void sortPartiesOnRemainingVotes() {
         // Bubble sort the parties based on number of remaining votes from highest to lowest
         for (int i = parties.length - 1; i >= 0; i--) {
@@ -326,7 +371,7 @@ public class OPLElection implements Election {
                     parties[j+1] = temp;
                 } else if (parties[j].getNumVotes() % quota == parties[j+1].getNumVotes() % quota) {
                     // Case where there is a tie. Choose a random party to be ahead in the ordering
-                    int rand = (int)(Math.random()*2);
+                    int rand = (int)(Math.random()*2); // rand is either 0 or 1 with equal probability
                     if (rand == 0) {
                         Party temp = parties[j];
                         parties[j] = parties[j+1];
@@ -338,6 +383,10 @@ public class OPLElection implements Election {
 
     }
 
+    /*
+     * Modify the candidates member variable by bubble sorting the candidates based on number of total votes
+     * from highest to lowest.
+     */
     private void sortCandidatesOnVotes() {
         // Bubble sort the candidates based on number of votes acquired from highest to lowest
         for (int i = candidates.length - 1; i >= 0; i--) {
@@ -348,13 +397,60 @@ public class OPLElection implements Election {
                     candidates[j+1] = temp;
                 } else if (candidates[j].getNumVotes() == candidates[j+1].getNumVotes()) {
                     // Case in which there is a tie. Chose a random candidate to be ahead in the order.
-                    int rand = (int)(Math.random()*2);
+                    int rand = (int)(Math.random()*2); // rand is either 0 or 1 with equal probability
                     if (rand == 0) {
                         Candidate temp = candidates[j];
                         candidates[j] = candidates[j+1];
                         candidates[j+1] = temp;
                     }
                 }
+            }
+        }
+    }
+
+    /*
+     * Appends detailed results for each party and candidate to the data to be written to the audit file.
+     */
+    private void addDetailedResultsToAuditData() {
+        for (Party p : parties) {
+            audit_data.append("Party ").append(p.getName()).append(" received a total of ").append(p.getNumVotes())
+                    .append(" votes with remainder ").append(p.getNumVotes() % quota).append(" for a total of ")
+                    .append(p.getNumSeats()).append(" seats won.").append("\n");
+        }
+        for (Candidate c : candidates) {
+            audit_data.append("Candidate ").append(c.getName()).append(", ")
+                    .append(c.getParty()).append(", received a total of ").append(c.getNumVotes()).append(" votes");
+            if (candidate_winners.contains(c)) {
+                audit_data.append(", winning a seat");
+            } else {
+                audit_data.append(", not winning a seat");
+            }
+            audit_data.append("\n");
+        }
+    }
+
+    /*
+     * Write all the information stored in member variable audit_data to an audit file.
+     */
+    private void writeToAuditFile() {
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        audit_filename.append("audit_file_").append(timeStamp).append(".txt");
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(String.valueOf(audit_filename));
+            bw = new BufferedWriter(fw);
+            bw.write(audit_data.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null)
+                    bw.close();
+                if (fw != null)
+                    fw.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
     }
