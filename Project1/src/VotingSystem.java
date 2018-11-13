@@ -36,7 +36,6 @@ public class VotingSystem {
                     not_valid_file = false;
                 } else if (bf.getElectionType().equals("IR")) {
                     el = new IRElection(bf);
-                    el.runElection();
                     not_valid_file = false;
                 } else {
                     ui.displayInvalidElectionType(bf.getElectionType(), System.out);
