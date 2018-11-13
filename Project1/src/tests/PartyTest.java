@@ -72,7 +72,7 @@ class PartyTest {
     }
 
     @Test
-    void acquireBallotCorrectNumVotes() {
+    void getAcquiredBallotsCorrectNumVotes() {
         p.acquireBallot(0);
         assertTrue(p.getNumVotes() == 1);
     }
