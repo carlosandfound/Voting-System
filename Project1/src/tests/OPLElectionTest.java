@@ -6,14 +6,13 @@
  * Authors: Justin Koo
  */
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,8 +20,8 @@ class OPLElectionTest {
     private static BallotFile bf;
     private static OPLElection e;
 
-    @BeforeAll
-    static void setup() {
+    @BeforeEach
+    void setup() {
         String simple_opl_file_path = FileSystems
                 .getDefault()
                 .getPath("testing", "simple_opl_ballot_file.csv")
@@ -113,13 +112,13 @@ class OPLElectionTest {
         }
     }
 
-    @Disabled
     @Test
-    void getCandidateWinners() {
+    void getCandidateWinnersNotEmptySimpleOPL() {
+        assertTrue(!e.getCandidateWinners().isEmpty());
     }
 
-    @Disabled
     @Test
-    void getPartyWinners() {
+    void getPartyWinnersNotEmptySimpleOPL() {
+        assertTrue(!e.getPartyWinners().isEmpty());
     }
 }
