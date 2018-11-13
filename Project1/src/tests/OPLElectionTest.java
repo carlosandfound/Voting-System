@@ -1,3 +1,11 @@
+/*
+ * File: OPLElectionTest.java
+ *
+ * Description: this file contains the unit tests for all public methods within the OPLElection class.
+ *
+ * Authors: Justin Koo
+ */
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -103,11 +111,6 @@ class OPLElectionTest {
                         + ". Expected party " + i + " number candidates " + expected_num_candidates[i]);
             }
         }
-    }
-    
-    @Disabled
-    @Test
-    void runElection() {
     }
 
     @Disabled

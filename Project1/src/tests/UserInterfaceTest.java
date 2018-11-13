@@ -1,3 +1,11 @@
+/*
+ * File: UserInterfaceTest.java
+ *
+ * Description: this file contains the unit tests for all public methods within the UserInterface class.
+ *
+ * Authors: Justin Koo
+ */
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

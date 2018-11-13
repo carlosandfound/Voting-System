@@ -1,4 +1,10 @@
-
+/*
+ * File: BallotFileTest.java
+ *
+ * Description: this file contains the unit tests for all public methods within the BallotFile class.
+ *
+ * Authors: Justin Koo
+ */
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

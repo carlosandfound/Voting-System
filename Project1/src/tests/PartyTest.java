@@ -1,3 +1,10 @@
+/*
+ * File: PartyTest.java
+ *
+ * Description: this file contains the unit tests for all public methods within the Party class.
+ *
+ * Authors: Justin Koo
+ */
 
 import org.junit.jupiter.api.Test;
 
