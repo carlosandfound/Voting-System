@@ -305,7 +305,7 @@ public class IRElection implements Election {
     private void writeToAuditFile() {
         //StringBuffer filename = new StringBuffer();
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        audit_filename.append("audit_file_").append(timeStamp).append(".txt");
+        audit_filename.append("audit_file_").append(bf.getFilename()).append("_").append(timeStamp).append(".txt");
         //System.out.println(filename);
         
         BufferedWriter bw = null;
