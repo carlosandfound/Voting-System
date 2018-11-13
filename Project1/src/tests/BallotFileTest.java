@@ -34,7 +34,7 @@ class BallotFileTest {
     }
 
     @Test
-    void BallotFileConstructorDoesNotThrowExceptions() {
+    void BallotFileConstructorDoesNotThrowExceptionsSimpleOPL() {
         assertDoesNotThrow(() -> {
             BallotFile _bf = new BallotFile(ballot_file);
         });
@@ -50,7 +50,7 @@ class BallotFileTest {
     }
 
     @Test
-    void getFilename() {
+    void getFilenameSimpleOPL() {
         Assertions.assertEquals("simple_opl_ballot_file.csv", bf.getFilename());
     }
 
