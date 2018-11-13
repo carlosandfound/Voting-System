@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.FileSystems;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +31,14 @@ class UserInterfaceTest {
     }
 
     @Test
-    void requestBallotFilenameSuccess() {
+    void userInterfaceConstructor() {
+        assertDoesNotThrow(() -> {
+            ui = new UserInterface();
+        });
+    }
+
+    @Test
+    void requestBallotFilename() {
         String input = "simple_opl_ballot_file.csv";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         String ballot_filename = ui.requestBallotFilename(System.out, System.in);
@@ -38,16 +46,7 @@ class UserInterfaceTest {
     }
 
     @Test
-    void requestBallotFilenameFail() {
-        String typo_input = "simples_opl_ballot_file.csv";
-        String corrected_input = "simple_opl_ballot_file.csv";
-        System.setIn(new ByteArrayInputStream(typo_input.getBytes()));
-        String ballot_filename = ui.requestBallotFilename(System.out, System.in);
-        assertNotEquals(ballot_filename, corrected_input);
-    }
-
-    @Test
-    void displayInvalidElectionTypeSuccess() {
+    void displayInvalidElectionType() {
         ConsoleOutputCapturer coc = new ConsoleOutputCapturer();
         coc.start();
         ui.displayInvalidElectionType("CPL", System.out);
@@ -56,16 +55,7 @@ class UserInterfaceTest {
     }
 
     @Test
-    void displayInvalidElectionTypeFail() {
-        ConsoleOutputCapturer coc = new ConsoleOutputCapturer();
-        coc.start();
-        ui.displayInvalidElectionType("IR", System.out);
-        String capture = coc.stop();
-        assertNotEquals("Detected election type as CPL. Election type must be IR or OPL\n", capture);
-    }
-
-    @Test
-    void displayExceptionMessageSuccess() {
+    void displayExceptionMessage() {
         Exception e = new Exception("This is an exception message");
         ConsoleOutputCapturer coc = new ConsoleOutputCapturer();
         coc.start();
@@ -75,20 +65,21 @@ class UserInterfaceTest {
     }
 
     @Test
-    void displayExceptionMessageFail() {
-        Exception e = new Exception("This is an exception message");
+    void displayResultsNotEmpty() throws IOException {
+        String filepath = FileSystems.getDefault().getPath("testing", "simple_opl_ballot_file.csv").toAbsolutePath().toString();
+        File ballot_file = new File(filepath);
+        BallotFile bf = new BallotFile((ballot_file));
+        Election e = new OPLElection(bf);
         ConsoleOutputCapturer coc = new ConsoleOutputCapturer();
         coc.start();
-        ui.displayExceptionMessage(e, System.out);
+        ui.displayResults(e, System.out);
         String capture = coc.stop();
-        assertNotEquals("Thiss is an exception message\n", capture);
+        assertTrue(!capture.isEmpty());
     }
 
-    @Disabled
-    @Test
-    void displayResults() {
-    }
-
+    /*
+     * Utility method to capture console input and output for automated testing purposes.
+     */
     public class ConsoleOutputCapturer {
         private ByteArrayOutputStream baos;
         private PrintStream previous;
