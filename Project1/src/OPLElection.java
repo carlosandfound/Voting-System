@@ -129,6 +129,7 @@ public class OPLElection implements Election {
         sb.append(electionInfoToString());
         sb.append(partyWinnersInfoToString());
         sb.append(candidateWinnersInfoToString());
+        sb.append("The audit file '").append(audit_filename.toString()).append("'").append(" has been generated\n");
         return sb.toString();
     }
 
@@ -362,7 +363,7 @@ public class OPLElection implements Election {
     private void sortPartiesOnRemainingVotes() {
         // Bubble sort the parties based on number of remaining votes from highest to lowest
         for (int i = parties.length - 1; i >= 0; i--) {
-            for (int j = 0; j < 1; j++) {
+            for (int j = 0; j < i; j++) {
                 if (parties[j].getNumVotes() % quota < parties[j+1].getNumVotes() % quota) {
                     Party temp = parties[j];
                     parties[j] = parties[j+1];
@@ -432,7 +433,7 @@ public class OPLElection implements Election {
      */
     private void writeToAuditFile() {
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        audit_filename.append("audit_file_").append(timeStamp).append(".txt");
+        audit_filename.append("audit_file_").append(bf.getFilename()).append("_").append(timeStamp).append(".txt");
         BufferedWriter bw = null;
         FileWriter fw = null;
         try {
