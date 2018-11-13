@@ -58,8 +58,7 @@ public class IRElection implements Election {
         this.votes = new ArrayList<Integer>();
     }
 
-    @Override
-    public void runElection() {
+    private void runElection() {
         if (!has_been_run) {
             data.append(electionInfotoString());
             this.populateCandidates();
