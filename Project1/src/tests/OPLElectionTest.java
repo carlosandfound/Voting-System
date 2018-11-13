@@ -121,4 +121,9 @@ class OPLElectionTest {
     void getPartyWinnersNotEmptySimpleOPL() {
         assertTrue(!e.getPartyWinners().isEmpty());
     }
+
+    @Test
+    void toStringNotEmptySimpleOPL() {
+        assertTrue(!e.toString().isEmpty());
+    }
 }
