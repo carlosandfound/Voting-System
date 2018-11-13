@@ -23,37 +23,51 @@ public class SystemTest {
 
     @Test
     void VotingSystemIRBallotFile1NoErrors() {
-        runVotingSystemWithFilenameAsInput("ir_ballot_file_1.csv");
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsInput("ir_ballot_file_1.csv");
+        });
     }
 
     @Test
     void VotingSystemIRBallotFile2NoErrors() {
-        runVotingSystemWithFilenameAsInput("ir_ballot_file_2.csv");
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsInput("ir_ballot_file_2.csv");
+        });
     }
 
     @Test
     void VotingSystemIRBallotFile3NoErrors() {
-        runVotingSystemWithFilenameAsInput("ir_ballot_file_3.csv");
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsInput("ir_ballot_file_3.csv");
+        });
     }
 
     @Test
     void VotingSystemIRBallotFile4NoErrors() {
-        runVotingSystemWithFilenameAsInput("ir_ballot_file_4.csv");
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsInput("ir_ballot_file_4.csv");
+        });
     }
 
     @Test
     void VotingSystemIRBallotFile5NoErrors() {
-        runVotingSystemWithFilenameAsInput("ir_ballot_file_5.csv");
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsInput("ir_ballot_file_5.csv");
+        });
     }
 
     @Test
     void VotingSystemSimpleIRBallotFileNoErrors() {
-        runVotingSystemWithFilenameAsInput("simple_ir_ballot_file.csv");
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsInput("simple_ir_ballot_file.csv");
+        });
     }
 
     @Test
     void VotingSystemLargeIRBallotFileNoErrors() {
-        runVotingSystemWithFilenameAsInput("large_ir_ballot_file.csv");
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsInput("large_ir_ballot_file.csv");
+        });
     }
 
     @Test
