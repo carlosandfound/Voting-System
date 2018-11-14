@@ -53,13 +53,6 @@ public class IRElectionTest {
     }
 
     @Test
-    public void testAuditFileNameSimpleIR(){
-        e.toString();
-        assertTrue(e.getAuditFileName().contains("audit_file_"));
-        assertTrue(e.getAuditFileName().contains(".txt"));
-    }
-
-    @Test
     public void testNumCandidatesSimpleIR() {
         assertEquals(4, e.getNumCandidates());
     }
@@ -85,6 +78,6 @@ public class IRElectionTest {
 
     @Test
     public void testMajorityCriteria() {
-        assertEquals(4, e.getMajorityCriteria());
+        assertEquals(4, e.getQuota());
     }
 }
