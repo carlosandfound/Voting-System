@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <h1>>Party</h1>
+ * <h1>Party</h1>
  * <h2>Purpose</h2>
  * The Party class provides a object model of political parties that participate in elections.
  */
