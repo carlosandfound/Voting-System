@@ -1,4 +1,5 @@
-Project1/.idea/
-*.iml
+Project1/.idea/workspace.xml
+Project1/.idea/usage.statistics.xml
+Project1/.idea/tasks.xml
 *.class
 Project1/out/
