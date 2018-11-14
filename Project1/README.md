@@ -1,12 +1,9 @@
 # repo-Team17
 Team17 (Alvarenga, Zhang, Koo, McLaughlin)
 
-1)  Carlos Alvarenga (alvar357)
-2)  Xiaochen Zhang (zhan6687)
-3)  Justin Koo (kooxx078)
-4)  Michael McLaughlin (mclau361)
+Carlos Alvarenga (alvar357)
+Xiaochen Zhang (zhan6687)
+Justin Koo (kooxx078)
+Michael McLaughlin (mclau361)
 
-Expectations:
-1)  Meet in the allotted times in Walter Library
-2)  Discord will be used for video/voice chat
-3)  Email is secondary form of communication
+All .csv files located in the /testing folder should be moved/copied to the /src folder for the tests in /testing to run correctly. This is due to the fact that SystemTest.java assumes that the ballot files are located under the /src folder.
