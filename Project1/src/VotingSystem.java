@@ -28,7 +28,7 @@ public class VotingSystem {
         Election el = null;
         while (not_valid_file) {
             String ballot_filename = ui.requestBallotFilename(System.out, System.in);
-            File ballot_file = new File(FileSystems.getDefault().getPath("src", ballot_filename).toString());
+            File ballot_file = new File(ballot_filename);
             try {
                 BallotFile bf = new BallotFile(ballot_file);
                 if (bf.getElectionType().equals("OPL")) {
