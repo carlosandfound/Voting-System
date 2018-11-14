@@ -77,7 +77,20 @@ public class IRElectionTest {
     }
 
     @Test
-    public void testMajorityCriteria() {
-        assertEquals(4, e.getQuota());
+    void testCandidatesSimpleIR() {
+        e.toString();
+        String[] expected_names = {"Rosen", "Kleinberg", "Chou", "Royce"};
+        Candidate[] candidates = e.getCandidates();
+        for (int i = 0; i < candidates.length; i++) {
+            Candidate c = candidates[i];
+            if (!c.getName().equals(expected_names[i])) {
+                fail("Found candidate " + i + " name " + c.getName() + ". Expected candidate " + i + " name " + expected_names[i]);
+            }
+        }
+    }
+
+    @Test
+    void testQuota() {
+        assertEquals(4,e.getQuota());
     }
 }
