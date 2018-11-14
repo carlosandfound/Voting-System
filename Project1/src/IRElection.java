@@ -25,7 +25,7 @@ public class IRElection implements Election {
     private int num_candidates;
     private int num_ballots;
     private int quota;
-    private int minority_criteria;      // the number of votes that the losing candidate has (i.e. minimum number of cotes)
+    private int minority_criteria;      // the number of votes that the losing candidate has (i.e. minimum number of votes)
     private int winning_candidate_id;
     private boolean has_been_run;
     private StringBuffer audit_data;
