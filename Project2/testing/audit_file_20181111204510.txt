@@ -1,0 +1,35 @@
+Election Type: IR
+Number of candidates: 4
+Candidates: Rosen (D), Kleinberg (R), Chou (I), Royce (L)
+Number of ballots: 6
+Candidate Rosen (D) has gained a vote in ballot 1 as rank 1.
+Candidate Rosen (D) now has a total of 1 vote(s).
+Candidate Rosen (D) has gained a vote in ballot 2 as rank 1.
+Candidate Rosen (D) now has a total of 2 vote(s).
+Candidate Rosen (D) has gained a vote in ballot 3 as rank 1.
+Candidate Rosen (D) now has a total of 3 vote(s).
+Candidate Royce (L) has gained a vote in ballot 4 as rank 1.
+Candidate Royce (L) now has a total of 1 vote(s).
+Candidate Kleinberg (R) has gained a vote in ballot 5 as rank 1.
+Candidate Kleinberg (R) now has a total of 1 vote(s).
+Candidate Kleinberg (R) has gained a vote in ballot 6 as rank 1.
+Candidate Kleinberg (R) now has a total of 2 vote(s).
+Candidate Chou (I) has lost the election with 0 vote(s).
+Candidate Royce (L) has lost the election with 1 vote(s).
+A vote has been reallocated from candidate Royce (L) to candidate Kleinberg (R).
+Candidate Kleinberg (R) has gained a vote in ballot 4 as rank 2.
+Candidate Kleinberg (R) now has a total of 3 vote(s).
+There are 2 candidates with 3 votes(s).
+These candidates are Rosen (D), Kleinberg (R).
+By random chance, candidate Kleinberg (R) has lost the election with 3 vote(s).
+A vote has been reallocated from candidate Kleinberg (R) to candidate Rosen (D).
+Candidate Rosen (D) has gained a vote in ballot 5 as rank 3.
+Candidate Rosen (D) now has a total of 4 vote(s).
+Reallocating the votes of 3 ballot(s) from losing candidate Kleinberg (R).
+A vote has been reallocated from candidate Kleinberg (R) to candidate Rosen (D).
+Candidate Rosen (D) has gained a vote in ballot 6 as rank 4.
+Candidate Rosen (D) now has a total of 5 vote(s).
+A vote has been reallocated from candidate Kleinberg (R) to candidate Rosen (D).
+Candidate Rosen (D) has gained a vote in ballot 4 as rank 4.
+Candidate Rosen (D) now has a total of 6 vote(s).
+Candidate Rosen (D) has won the election with a majority of 4 vote(s).
