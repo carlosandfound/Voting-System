@@ -20,28 +20,34 @@ public class VotingSystem {
 
     /**
      * Provides an entry point for the execution of the "Voting System" product.
-     * @param args A {@code String[]} specifying arguments provided during program execution. Currently none are required.
+     * @param args A {@code String[]} specifying arguments provided during program execution. Currently the first
+     *             argument (if any) specifies the file name for the election file.
      */
     public static void main(String[] args) {
         UserInterface ui = new UserInterface();
-        boolean not_valid_file = true;
+        boolean valid_file = false;
         Election el = null;
-        while (not_valid_file) {
-            String ballot_filename = ui.requestBallotFilename(System.out, System.in);
+        while (!valid_file) {
+            valid_file = true;
+            String ballot_filename = null;
+            if (args.length == 0) ballot_filename = ui.requestBallotFilename(System.out, System.in);
+            else ballot_filename = args[0];
             File ballot_file = new File(ballot_filename);
             try {
                 BallotFile bf = new BallotFile(ballot_file);
                 if (bf.getElectionType().equals("OPL")) {
                     el = new OPLElection(bf);
-                    not_valid_file = false;
                 } else if (bf.getElectionType().equals("IR")) {
                     el = new IRElection(bf);
-                    not_valid_file = false;
                 } else {
                     ui.displayInvalidElectionType(bf.getElectionType(), System.out);
+                    valid_file = false;
+                    if (args.length != 0) return;
                 }
             } catch (IOException e) {
                 ui.displayExceptionMessage(e, System.out);
+                valid_file = false;
+                if (args.length != 0) return;
             }
         }
         ui.displayResults(el, System.out);
