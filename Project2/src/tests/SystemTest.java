@@ -24,119 +24,119 @@ public class SystemTest {
     @Test
     void VotingSystemIRBallotFile1NoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("ir_ballot_file_1.csv");
+            runVotingSystemWithFilenameAsInput("testing/ir_ballot_file_1.csv");
         });
     }
 
     @Test
     void VotingSystemIRBallotFile2NoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("ir_ballot_file_2.csv");
+            runVotingSystemWithFilenameAsInput("testing/ir_ballot_file_2.csv");
         });
     }
 
     @Test
     void VotingSystemIRBallotFile3NoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("ir_ballot_file_3.csv");
+            runVotingSystemWithFilenameAsInput("testing/ir_ballot_file_3.csv");
         });
     }
 
     @Test
     void VotingSystemIRBallotFile4NoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("ir_ballot_file_4.csv");
+            runVotingSystemWithFilenameAsInput("testing/ir_ballot_file_4.csv");
         });
     }
 
     @Test
     void VotingSystemIRBallotFile5NoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("ir_ballot_file_5.csv");
+            runVotingSystemWithFilenameAsInput("testing/ir_ballot_file_5.csv");
         });
     }
 
     @Test
     void VotingSystemSimpleIRBallotFileNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("simple_ir_ballot_file.csv");
+            runVotingSystemWithFilenameAsInput("testing/simple_ir_ballot_file.csv");
         });
     }
 
     @Test
     void VotingSystemLargeIRBallotFileNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("large_ir_ballot_file.csv");
+            runVotingSystemWithFilenameAsInput("testing/large_ir_ballot_file.csv");
         });
     }
 
     @Test
     void VotingSystemOPLBallotFile0Candidate0Seat0BallotNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("opl_ballot_file_0_candidate_0_seat_0_ballot.csv");
+            runVotingSystemWithFilenameAsInput("testing/opl_ballot_file_0_candidate_0_seat_0_ballot.csv");
         });
     }
 
     @Test
     void VotingSystemOPLBallotFile0Candidate1Seat0BallotNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("opl_ballot_file_0_candidate_1_seat_0_ballot.csv");
+            runVotingSystemWithFilenameAsInput("testing/opl_ballot_file_0_candidate_1_seat_0_ballot.csv");
         });
     }
 
     @Test
     void VotingSystemOPLBallotFile1Candidate0Seat0BallotNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("opl_ballot_file_1_candidate_0_seat_0_ballot.csv");
+            runVotingSystemWithFilenameAsInput("testing/opl_ballot_file_1_candidate_0_seat_0_ballot.csv");
         });
     }
 
     @Test
     void VotingSystemOPLBallotFile1Candidate0Seat1BallotNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("opl_ballot_file_1_candidate_0_seat_1_ballot.csv");
+            runVotingSystemWithFilenameAsInput("testing/opl_ballot_file_1_candidate_0_seat_1_ballot.csv");
         });
     }
 
     @Test
     void VotingSystemOPLBallotFile1Candidate1Seat0BallotNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("opl_ballot_file_1_candidate_1_seat_0_ballot.csv");
+            runVotingSystemWithFilenameAsInput("testing/opl_ballot_file_1_candidate_1_seat_0_ballot.csv");
         });
     }
 
     @Test
     void VotingSystemOPLBallotFile1Candidate1Seat1BallotNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("opl_ballot_file_1_candidate_1_seat_1_ballot.csv");
+            runVotingSystemWithFilenameAsInput("testing/opl_ballot_file_1_candidate_1_seat_1_ballot.csv");
         });
     }
 
     @Test
     void VotingSystemSimpleOPLBallotFileNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("simple_opl_ballot_file.csv");
+            runVotingSystemWithFilenameAsInput("testing/simple_opl_ballot_file.csv");
         });
     }
 
     @Test
     void VotingSystemLargeOPLBallotFileNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("large_opl_ballot_file.csv");
+            runVotingSystemWithFilenameAsInput("testing/large_opl_ballot_file.csv");
         });
     }
 
     @Test
     void VotingSystemLargeOPLBallotFileUnder8Minutes() {
         assertTimeout(ofMinutes(8), () -> {
-            runVotingSystemWithFilenameAsInput("large_opl_ballot_file.csv");
+            runVotingSystemWithFilenameAsInput("testing/large_opl_ballot_file.csv");
         });
     }
 
     @Test
     void VotingSystemLargeIRBallotFileUnder8Minutes() {
         assertTimeout(ofMinutes(8), () -> {
-            runVotingSystemWithFilenameAsInput("large_ir_ballot_file.csv");
+            runVotingSystemWithFilenameAsInput("testing/large_ir_ballot_file.csv");
         });
     }
 }
