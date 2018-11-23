@@ -17,7 +17,14 @@ public class SystemTest {
 
     private int runVotingSystemWithFilenameAsInput(String filename) {
         System.setIn(new ByteArrayInputStream(filename.getBytes()));
-        VotingSystem.main(null);
+        String[] args = new String[0];
+        VotingSystem.main(args);
+        return 0;
+    }
+
+    private int runVotingSystemWithFilenameAsArgument(String filename) {
+        String[] args = {filename};
+        VotingSystem.main(args);
         return 0;
     }
 
@@ -123,6 +130,20 @@ public class SystemTest {
     void VotingSystemLargeOPLBallotFileNoErrors() {
         assertDoesNotThrow(() -> {
             runVotingSystemWithFilenameAsInput("testing/large_opl_ballot_file.csv");
+        });
+    }
+
+    @Test
+    void VotingSystemArgumentProvidedLargeOPLBallotFileNoErrors() {
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsArgument("testing/large_opl_ballot_file.csv");
+        });
+    }
+
+    @Test
+    void VotingSystemInvalidArgumentProvidedNoErrors() {
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsArgument("testing/llarge_opl_ballot_file.csv");
         });
     }
 
