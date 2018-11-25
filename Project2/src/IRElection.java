@@ -24,10 +24,12 @@ public class IRElection implements Election {
     private int ballots_start_line_num;
     private int num_candidates;
     private int num_ballots;
+    private int num_invalidated_data;
     private int quota;
     private int minority_criteria;      // the number of votes that the losing candidate has (i.e. minimum number of votes)
     private int winning_candidate_id;
     private boolean has_been_run;
+    private String timeStamp;
     private StringBuffer audit_data;
     private StringBuffer audit_filename;
     private StringBuffer invalidated_data;
@@ -53,8 +55,10 @@ public class IRElection implements Election {
         this.ballots_start_line_num = 5;
         this.num_candidates = Integer.parseInt(bf.getLine(num_candidates_line_num));
         this.num_ballots = Integer.parseInt(bf.getLine(num_ballots_line_num));
+        this.num_invalidated_data = 0;
         this.quota = (num_ballots/2) + 1;
         this.minority_criteria = quota;
+        this.timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         this.audit_data = new StringBuffer();
         this.audit_filename = new StringBuffer();
         this.invalidated_data = new StringBuffer();
@@ -154,6 +158,18 @@ public class IRElection implements Election {
         return candidates;
     }
 
+    /**
+     * Method to obtain the number of invalid ballots in an {@code IRElection} instance.
+     * @return A {@code int} denoting the number of invalid ballots in the election.
+     */
+    public int getNumInvalidatedBallots() { return num_invalidated_data;}
+
+    /**
+     * Method to obtain the timestamp of an {@code IRElection} instance.
+     * @return A {@code String} denoting the start time of the election.
+     */
+    public String getTimeStamp() { return timeStamp; }
+
     /*
      * ALL private "helper" methods are below
      */
@@ -182,7 +198,6 @@ public class IRElection implements Election {
         }
         calculateWinner();
         gatherWinnerInfo(winning_candidate_id);
-        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         writeToAuditFile(timeStamp);
         writeToInvalidFile(timeStamp);
         has_been_run = true;
@@ -379,6 +394,7 @@ public class IRElection implements Election {
         audit_data.append("') at line ").append(line_number).append(" in the ballot file has been invalidated.\n");
         invalidated_data.append("Ballot ").append(ballot_id+1).append(" (i.e. '").append(ballot);
         invalidated_data.append("') at line number ").append(line_number).append("\n");
+        num_invalidated_data = num_invalidated_data + 1;
     }
 
     /*
