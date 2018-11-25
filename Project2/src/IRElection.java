@@ -30,6 +30,8 @@ public class IRElection implements Election {
     private boolean has_been_run;
     private StringBuffer audit_data;
     private StringBuffer audit_filename;
+    private StringBuffer invalidated_data;
+    private StringBuffer invalidated_filename;
 
     private int[][] ballots;
     private Candidate[] candidates;
@@ -55,6 +57,8 @@ public class IRElection implements Election {
         this.minority_criteria = quota;
         this.audit_data = new StringBuffer();
         this.audit_filename = new StringBuffer();
+        this.invalidated_data = new StringBuffer();
+        this.invalidated_filename = new StringBuffer();
         this.ballots = new int[num_ballots][num_candidates];
         this.candidates = new Candidate[num_candidates];
         this.winning_candidate_id = -1;
@@ -113,6 +117,7 @@ public class IRElection implements Election {
         else
             sb.append(" votes\n");
         sb.append("The audit file '").append(audit_filename).append("'").append(" has been generated\n");
+        sb.append("The invalidated ballots file '").append(invalidated_filename).append("'").append(" has been generated\n");
         return sb.toString();
     }
 
@@ -162,17 +167,24 @@ public class IRElection implements Election {
             return;
         }
         audit_data.append(electionInfotoString());
+        invalidated_data.append("Invalid ballots with their line number relative to the ballot file:\n");
         this.populateCandidates();
         int ballot_id = 0;
         // Allocate votes of each ballot to the first place candidates.
         for (int i = ballots_start_line_num; i < num_ballots + ballots_start_line_num; i++) {
-            String ballot[] = bf.getLine(i).split(",");
-            sortBallot(ballot_id, ballot);
+            String ballot_str = bf.getLine(i);
+            String ballot[] = ballot_str.split(",");
+            if (isBallotValid(ballot))
+                sortBallot(ballot_id, ballot);
+            else
+                gatherInvalidBallotsInfo(ballot_str, ballot_id, i);
             ballot_id++;
         }
         calculateWinner();
         gatherWinnerInfo(winning_candidate_id);
-        writeToAuditFile();
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        writeToAuditFile(timeStamp);
+        writeToInvalidFile(timeStamp);
         has_been_run = true;
     }
 
@@ -230,6 +242,22 @@ public class IRElection implements Election {
         StringBuilder sb = new StringBuilder();
         sb.append(candidates[candidates_id].getName()).append(" (").append(candidates[candidates_id].getParty()).append(")");
         return sb.toString();
+    }
+
+    /*
+     * Returns true or false depending on whether or not a ballot is valid
+     */
+    private boolean isBallotValid(String[] ballot) {
+        int num_ranked_needed = (num_candidates + 1) / 2;
+        int num_candidates_ranked = 0;
+        for (int i = 0; i < ballot.length; i++) {
+            if (!ballot[i].equals(""))
+                num_candidates_ranked++;
+            if (num_candidates_ranked >= num_ranked_needed) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /*
@@ -343,6 +371,17 @@ public class IRElection implements Election {
     }
 
     /*
+     * Responsible for modifying the member variables audit_data and invalid_ballots to record information regarding
+     * invalid ballots
+     */
+    private void gatherInvalidBallotsInfo(String ballot, int ballot_id, int line_number) {
+        audit_data.append("Ballot ").append(ballot_id+1).append(" (i.e. '").append(ballot);
+        audit_data.append("') at line ").append(line_number).append(" in the ballot file has been invalidated.\n");
+        invalidated_data.append("Ballot ").append(ballot_id+1).append(" (i.e. '").append(ballot);
+        invalidated_data.append("') at line number ").append(line_number).append("\n");
+    }
+
+    /*
      * Responsible for modifying the member variable audit_data to record information regarding the process of a
      * candidate gaining a ballot vote in an IR election
      */
@@ -404,17 +443,39 @@ public class IRElection implements Election {
     /*
      * Write all the information stored in member variable audit_data to an audit file.
      */
-    private void writeToAuditFile() {
-        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+    private void writeToAuditFile(String timeStamp) {
         audit_filename.append("audit_file_").append(bf.getFilename()).append("_").append(timeStamp).append(".txt");
-
         BufferedWriter bw = null;
         FileWriter fw = null;
-
         try {
             fw = new FileWriter(String.valueOf(audit_filename));
             bw = new BufferedWriter(fw);
             bw.write(audit_data.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null)
+                    bw.close();
+                if (fw != null)
+                    fw.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    /*
+     * Write all the information stored in member variable invalid_ballots to a file named invalidated_dateofelection.xxx
+     */
+    private void writeToInvalidFile(String timeStamp) {
+        invalidated_filename.append("invalidated_").append(timeStamp).append(".txt");
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(String.valueOf(invalidated_filename));
+            bw = new BufferedWriter(fw);
+            bw.write(invalidated_data.toString());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
