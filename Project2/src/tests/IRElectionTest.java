@@ -43,13 +43,20 @@ public class IRElectionTest {
 
     @Test
     public void testToStringSimpleIR() {
+        e.toString();
         StringBuilder expected_string = new StringBuilder();
         expected_string.append("Election Type: IR\n");
         expected_string.append("Number of candidates: 4\n");
         expected_string.append("Candidates: Rosen (D), Kleinberg (R), Chou (I), Royce (L)\n");
         expected_string.append("Number of ballots: 6\n");
         expected_string.append("Winning candidate: Rosen (D) with 4 votes\n");
-        assertTrue(e.toString().contains(expected_string));
+        StringBuffer audit_filename = new StringBuffer();
+        StringBuffer invalidated_filename = new StringBuffer();
+        audit_filename.append("audit_file_").append(bf.getFilename()).append("_").append(e.getTimeStamp()).append(".txt");
+        invalidated_filename.append("invalidated_").append(e.getTimeStamp()).append(".txt");
+        expected_string.append("The audit file '").append(audit_filename).append("'").append(" has been generated\n");
+        expected_string.append("The invalidated ballots file '").append(invalidated_filename).append("'").append(" has been generated\n");
+        assertEquals(expected_string.toString(), e.toString());
     }
 
     @Test
@@ -92,5 +99,16 @@ public class IRElectionTest {
     @Test
     void testQuota() {
         assertEquals(4,e.getQuota());
+    }
+
+    @Test
+    void testNumInvalidatedBallotsSimpleIR() {
+        e.toString();
+        assertEquals(1, e.getNumInvalidatedBallots());}
+
+    @Test
+    void testTimeStamp() {
+        e.toString();
+        assertEquals(14, e.getTimeStamp().length());
     }
 }
