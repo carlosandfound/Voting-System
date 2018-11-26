@@ -52,10 +52,13 @@ public class IRElectionTest {
         expected_string.append("Winning candidate: Rosen (D) with 4 votes\n");
         StringBuffer audit_filename = new StringBuffer();
         StringBuffer invalidated_filename = new StringBuffer();
+        StringBuffer short_report_filename = new StringBuffer();
         audit_filename.append("audit_file_").append(bf.getFilename()).append("_").append(e.getTimeStamp()).append(".txt");
         invalidated_filename.append("invalidated_").append(e.getTimeStamp()).append(".txt");
+        short_report_filename.append("short_report_").append(e.getTimeStamp()).append(".txt");
         expected_string.append("The audit file '").append(audit_filename).append("'").append(" has been generated\n");
         expected_string.append("The invalidated ballots file '").append(invalidated_filename).append("'").append(" has been generated\n");
+        expected_string.append("The short report '").append(short_report_filename).append("'").append(" has been generated\n");
         assertEquals(expected_string.toString(), e.toString());
     }
 
