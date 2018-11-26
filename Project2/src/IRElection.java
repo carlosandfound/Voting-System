@@ -34,6 +34,8 @@ public class IRElection implements Election {
     private StringBuffer audit_filename;
     private StringBuffer invalidated_data;
     private StringBuffer invalidated_filename;
+    private StringBuffer short_report_data;
+    private StringBuffer short_report_filename;
 
     private int[][] ballots;
     private Candidate[] candidates;
@@ -63,6 +65,8 @@ public class IRElection implements Election {
         this.audit_filename = new StringBuffer();
         this.invalidated_data = new StringBuffer();
         this.invalidated_filename = new StringBuffer();
+        this.short_report_data = new StringBuffer();
+        this.short_report_filename = new StringBuffer();
         this.ballots = new int[num_ballots][num_candidates];
         this.candidates = new Candidate[num_candidates];
         this.winning_candidate_id = -1;
@@ -122,6 +126,7 @@ public class IRElection implements Election {
             sb.append(" votes\n");
         sb.append("The audit file '").append(audit_filename).append("'").append(" has been generated\n");
         sb.append("The invalidated ballots file '").append(invalidated_filename).append("'").append(" has been generated\n");
+        sb.append("The short report '").append(short_report_filename).append("'").append(" has been generated\n");
         return sb.toString();
     }
 
@@ -200,6 +205,7 @@ public class IRElection implements Election {
         gatherWinnerInfo(winning_candidate_id);
         writeToAuditFile(timeStamp);
         writeToInvalidFile(timeStamp);
+        writeToShortReport(timeStamp);
         has_been_run = true;
     }
 
@@ -505,4 +511,44 @@ public class IRElection implements Election {
             }
         }
     }
+
+    /*
+     * Write all the information needed including election date, type, candidates, number of seats and the winner to a short report file.
+     */
+    private void writeToShortReport(String timeStamp) {
+        short_report_filename.append("short_report_").append(timeStamp).append(".txt");
+        short_report_data.append("Date of election: ").append(timeStamp, 0, 8).append("\n");
+        short_report_data.append("Type of election: IRV\n");
+        short_report_data.append("The candidates: ");
+        for (int i = 0; i < num_candidates; i++) {
+            short_report_data.append(candidates[i].getName());
+            if (i != num_candidates - 1) {
+                short_report_data.append(", ");
+            }
+            else {
+                short_report_data.append("\n");
+            }
+        }
+        short_report_data.append("Number of seats: 1\n");
+        short_report_data.append("The winner: ").append(winning_candidate.iterator().next().getName());
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(String.valueOf(short_report_filename));
+            bw = new BufferedWriter(fw);
+            bw.write(short_report_data.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null)
+                    bw.close();
+                if (fw != null)
+                    fw.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }
