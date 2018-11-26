@@ -27,6 +27,9 @@ public class OPLElection implements Election {
     private BallotFile bf;
     StringBuffer audit_data;
     StringBuffer audit_filename;
+    private StringBuffer short_report_data;
+    private StringBuffer short_report_filename;
+    private String timeStamp;
     private int num_candidates;
     private int num_seats;
     private int num_ballots;
@@ -64,6 +67,10 @@ public class OPLElection implements Election {
         this.candidate_winners = new HashSet<>();
         this.audit_data = new StringBuffer();
         this.audit_filename = new StringBuffer();
+        this.short_report_data = new StringBuffer();
+        this.short_report_filename = new StringBuffer();
+        this.timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+
         populateCandidatesAndParties();
     }
 
@@ -130,6 +137,7 @@ public class OPLElection implements Election {
         sb.append(partyWinnersInfoToString());
         sb.append(candidateWinnersInfoToString());
         sb.append("The audit file '").append(audit_filename.toString()).append("'").append(" has been generated\n");
+        sb.append("The short report '").append(short_report_filename.toString()).append("'").append(" has been generated\n");
         return sb.toString();
     }
 
@@ -161,6 +169,7 @@ public class OPLElection implements Election {
 
         addDetailedResultsToAuditData();
         writeToAuditFile();
+        writeToShortReport();
     }
 
     /**
@@ -432,7 +441,6 @@ public class OPLElection implements Election {
      * Write all the information stored in member variable audit_data to an audit file.
      */
     private void writeToAuditFile() {
-        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         audit_filename.append("audit_file_").append(bf.getFilename()).append("_").append(timeStamp).append(".txt");
         BufferedWriter bw = null;
         FileWriter fw = null;
@@ -440,6 +448,53 @@ public class OPLElection implements Election {
             fw = new FileWriter(String.valueOf(audit_filename));
             bw = new BufferedWriter(fw);
             bw.write(audit_data.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null)
+                    bw.close();
+                if (fw != null)
+                    fw.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    /*
+     * Write all the information needed including election date, type, candidates, number of seats and the winners to a short report file.
+     */
+    private void writeToShortReport() {
+        short_report_filename.append("short_report_").append(bf.getFilename()).append("_").append(timeStamp).append(".txt");
+        short_report_data.append("Date of election: ").append(timeStamp, 0, 8).append("\n");
+        short_report_data.append("Type of election: OPL\n");
+        short_report_data.append("The candidates: ");
+        for (int i = 0; i < num_candidates; i++) {
+            short_report_data.append(candidates[i].getName());
+            if (i != num_candidates - 1) {
+                short_report_data.append(", ");
+            }
+            else {
+                short_report_data.append("\n");
+            }
+        }
+        short_report_data.append("Number of seats: ").append(num_seats).append("\n");
+        short_report_data.append("The winners: ");
+        int count = 0;
+        for (Candidate c : candidate_winners) {
+            count = count + 1;
+            if (count < num_seats) {
+                short_report_data.append(c.getName()).append(", ");
+            }
+            else { short_report_data.append(c.getName()).append("\n");}
+        }
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(String.valueOf(short_report_filename));
+            bw = new BufferedWriter(fw);
+            bw.write(short_report_data.toString());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
