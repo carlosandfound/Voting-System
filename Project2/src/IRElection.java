@@ -29,6 +29,7 @@ public class IRElection implements Election {
     private int minority_criteria;      // the number of votes that the losing candidate has (i.e. minimum number of votes)
     private int winning_candidate_id;
     private boolean has_been_run;
+    private int total_num_votes;
     private String timeStamp;
     private StringBuffer audit_data;
     private StringBuffer audit_filename;
@@ -44,6 +45,9 @@ public class IRElection implements Election {
     private Set<Party> winning_party;               // set of party of sole winning candidate to conform to interface method
     private List<Integer> loser_ballot_ids;
     private List<Integer> votes;                    // list of cumulative votes for each candidate
+    private List<Integer> exhausted_pile_totals;
+    private List<Integer> exhausted_pile_updates;
+    private Table table;
 
     /**
      * Initializes an {@code IRElection} with the proper IR election parameters specified in {@code bf}.
@@ -71,11 +75,15 @@ public class IRElection implements Election {
         this.candidates = new Candidate[num_candidates];
         this.winning_candidate_id = -1;
         this.has_been_run = false;
+        this.total_num_votes = 0;
         this.surviving_candidate_ids = new HashSet<Integer>();
         this.winning_candidate = new HashSet<Candidate>();
         this.winning_party = new HashSet<Party>();
         this.loser_ballot_ids = new ArrayList<Integer>();
         this.votes = new ArrayList<Integer>();
+        this.exhausted_pile_totals = new ArrayList<Integer>();
+        this.exhausted_pile_updates = new ArrayList<Integer>();
+        table = new Table();
     }
 
     /**
@@ -127,6 +135,7 @@ public class IRElection implements Election {
         sb.append("The audit file '").append(audit_filename).append("'").append(" has been generated\n");
         sb.append("The invalidated ballots file '").append(invalidated_filename).append("'").append(" has been generated\n");
         sb.append("The short report '").append(short_report_filename).append("'").append(" has been generated\n");
+        sb.append("The following table shows the progression of votes through the election rounds: \n").append(table);
         return sb.toString();
     }
 
@@ -202,6 +211,7 @@ public class IRElection implements Election {
             ballot_id++;
         }
         calculateWinner();
+        table.populate(candidates, exhausted_pile_totals, exhausted_pile_updates, total_num_votes);
         gatherWinnerInfo(winning_candidate_id);
         writeToAuditFile(timeStamp);
         writeToInvalidFile(timeStamp);
@@ -229,6 +239,7 @@ public class IRElection implements Election {
      * Responsible for calculating the winning candidate of the election.
      */
     private void calculateWinner() {
+        updateRoundVotes();
         findMajority(surviving_candidate_ids);
 
         while (!hasWinner()) {
@@ -236,6 +247,7 @@ public class IRElection implements Election {
             minority_criteria = quota;
             surviving_candidate_ids.remove(loser_id);
             reallocateVotes(loser_id);
+            updateRoundVotes();
             findMajority(surviving_candidate_ids);
         }
 
@@ -294,8 +306,10 @@ public class IRElection implements Election {
             } else {
                 int rank = Integer.parseInt(ballot[i]);
                 ballots[ballot_id][rank-1] = i;
-                if (rank == 1) // only vote for first place candidate
+                if (rank == 1) {// only vote for first place candidate
                     voteFor(ballot_id, i, rank);
+                    total_num_votes++;
+                }
             }
         }
     }
@@ -389,6 +403,23 @@ public class IRElection implements Election {
             return true;
         }
         return false;
+    }
+
+    private void updateRoundVotes() {
+        int new_total_votes = 0;
+        for (Candidate c : candidates) {
+            c.updateRoundVotes(c.getNumVotes());
+            new_total_votes += c.getNumVotes();
+        }
+        int num_exhausted_votes = total_num_votes - new_total_votes;
+        int size = exhausted_pile_totals.size();
+        exhausted_pile_totals.add(num_exhausted_votes);
+        if (size > 0) {
+            int added_exhausted_votes= total_num_votes - exhausted_pile_totals.get(size-1);
+            exhausted_pile_updates.add(added_exhausted_votes);
+        } else {
+            exhausted_pile_updates.add(num_exhausted_votes);
+        }
     }
 
     /*

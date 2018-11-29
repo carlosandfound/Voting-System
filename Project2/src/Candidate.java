@@ -19,6 +19,8 @@ public class Candidate {
     private String party;
     private int num_votes;
     private List<Integer> acquired_ballots;
+    private List<Integer> total_round_votes;
+    private List<Integer> update_round_votes;
 
     /**
      * Intializes a {@code Candidate} instance with the parameters specified.
@@ -30,6 +32,8 @@ public class Candidate {
         this.party = party;
         this.num_votes = 0;
         acquired_ballots = new ArrayList<Integer>();
+        total_round_votes = new ArrayList<Integer>();
+        update_round_votes = new ArrayList<Integer>();
     }
 
     /**
@@ -65,6 +69,22 @@ public class Candidate {
     }
 
     /**
+     * Method to acquire the list of total votes per round for the {@code Candidate} instance.
+     * @return A {@code List<Integer>} containing all round votes a candidate possesses.
+     */
+    public List<Integer> getTotalRoundVotes() {
+        return total_round_votes;
+    }
+
+    /**
+     * Method to acquire the list of the number of votes that are added and/or subtracted each round for the {@code Candidate} instance.
+     * @return A {@code List<Integer>} containing all added and/or  subtracted round votes a candidate possesses.
+     */
+    public List<Integer> getUpdatedRoundVotes() {
+        return update_round_votes;
+    }
+
+    /**
      * Mutator method for the name of the {@code Candidate} instance.
      * @param name A {@code String} denoting the new name of the candidate.
      */
@@ -87,5 +107,35 @@ public class Candidate {
     public void acquireBallot(int ballot_id) {
         num_votes += 1;
         acquired_ballots.add(ballot_id);
+    }
+
+    public void updateRoundVotes(int votes) {
+        int size = total_round_votes.size();
+        total_round_votes.add(votes);
+        if (size == 0) {
+            update_round_votes.add(votes);
+        } else {
+            int update_votes = votes - total_round_votes.get(size-1);
+            update_round_votes.add(update_votes);
+        }
+
+        /*if (round == 0) {
+            total_round_votes.add(votes);
+            update_round_votes.add(votes);
+        }
+        else {
+            int size = total_round_votes.size();
+            if (round > size) {
+                for (int i = size; i < round; i++) {
+                    total_round_votes.add(0);
+                    update_round_votes.add(0);
+                }
+            }
+            total_round_votes.set(round - 1, votes);
+            int update_votes = votes - total_round_votes.get(round-1);
+            update_round_votes.set(round-1, update_votes);
+
+        }
+        */
     }
 }
