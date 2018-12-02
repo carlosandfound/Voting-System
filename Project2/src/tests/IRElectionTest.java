@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IRElectionTest {
     private static BallotFile bf;
     private static IRElection e;
+    //private static Table t;
 
     @BeforeAll
     static void setup() {
@@ -29,6 +30,7 @@ public class IRElectionTest {
         try {
             bf = new BallotFile(ballot_file);
             e = new IRElection(bf);
+            //t = new Table();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -59,6 +61,8 @@ public class IRElectionTest {
         expected_string.append("The audit file '").append(audit_filename).append("'").append(" has been generated\n");
         expected_string.append("The invalidated ballots file '").append(invalidated_filename).append("'").append(" has been generated\n");
         expected_string.append("The short report '").append(short_report_filename).append("'").append(" has been generated\n");
+        expected_string.append("The following table shows the progression of votes through the election rounds: \n");
+        expected_string.append(e.getTable().toString());
         assertEquals(expected_string.toString(), e.toString());
     }
 
