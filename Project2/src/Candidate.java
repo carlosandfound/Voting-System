@@ -70,7 +70,7 @@ public class Candidate {
 
     /**
      * Method to acquire the list of total votes per round for the {@code Candidate} instance.
-     * @return A {@code List<Integer>} containing all round votes a candidate possesses.
+     * @return A {@code List<Integer>} containing all votes a candidate possesses for each round.
      */
     public List<Integer> getTotalRoundVotes() {
         return total_round_votes;
@@ -78,7 +78,7 @@ public class Candidate {
 
     /**
      * Method to acquire the list of the number of votes that are added and/or subtracted each round for the {@code Candidate} instance.
-     * @return A {@code List<Integer>} containing all added and/or  subtracted round votes a candidate possesses.
+     * @return A {@code List<Integer>} containing all added and/or subtracted votes a candidate possesses for each round.
      */
     public List<Integer> getUpdatedRoundVotes() {
         return update_round_votes;
@@ -109,33 +109,26 @@ public class Candidate {
         acquired_ballots.add(ballot_id);
     }
 
+    /**
+     * Method to remove a vote for the {@code Candidate} instance.
+     */
+    public void removeVote() {
+        num_votes--;
+    }
+
+    /**
+     * Method to update (1) the total number of votes and (2) number of added/subtracted votes since last round that a
+     * {@code Candidate} instance currently possess as of the most recently finished round
+     * @param votes An {@code int} denoting the total number of votes that the candidate currently possesses
+     */
     public void updateRoundVotes(int votes) {
         int size = total_round_votes.size();
         total_round_votes.add(votes);
-        if (size == 0) {
+        if (size == 0) { // number of added votes is the same as total votes since it's the first round
             update_round_votes.add(votes);
         } else {
-            int update_votes = votes - total_round_votes.get(size-1);
+            int update_votes = votes - total_round_votes.get(size-1); // number of votes added or subtracted since last round
             update_round_votes.add(update_votes);
         }
-
-        /*if (round == 0) {
-            total_round_votes.add(votes);
-            update_round_votes.add(votes);
-        }
-        else {
-            int size = total_round_votes.size();
-            if (round > size) {
-                for (int i = size; i < round; i++) {
-                    total_round_votes.add(0);
-                    update_round_votes.add(0);
-                }
-            }
-            total_round_votes.set(round - 1, votes);
-            int update_votes = votes - total_round_votes.get(round-1);
-            update_round_votes.set(round-1, update_votes);
-
-        }
-        */
     }
 }

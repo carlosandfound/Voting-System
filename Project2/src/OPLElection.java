@@ -25,10 +25,10 @@ public class OPLElection implements Election {
     private static final int num_ballots_line_num = 5;
     private static final int ballot_start_line_num = 6;
     private BallotFile bf;
-    StringBuffer audit_data;
-    StringBuffer audit_filename;
-    private StringBuffer short_report_data;
-    private StringBuffer short_report_filename;
+    StringBuilder audit_data;
+    StringBuilder audit_filename;
+    private StringBuilder short_report_data;
+    private StringBuilder short_report_filename;
     private String timeStamp;
     private int num_candidates;
     private int num_seats;
@@ -65,10 +65,10 @@ public class OPLElection implements Election {
         }
         this.party_winners = new HashSet<>();
         this.candidate_winners = new HashSet<>();
-        this.audit_data = new StringBuffer();
-        this.audit_filename = new StringBuffer();
-        this.short_report_data = new StringBuffer();
-        this.short_report_filename = new StringBuffer();
+        this.audit_data = new StringBuilder();
+        this.audit_filename = new StringBuilder();
+        this.short_report_data = new StringBuilder();
+        this.short_report_filename = new StringBuilder();
         this.timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
         populateCandidatesAndParties();
@@ -442,24 +442,7 @@ public class OPLElection implements Election {
      */
     private void writeToAuditFile() {
         audit_filename.append("audit_file_").append(bf.getFilename()).append("_").append(timeStamp).append(".txt");
-        BufferedWriter bw = null;
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(String.valueOf(audit_filename));
-            bw = new BufferedWriter(fw);
-            bw.write(audit_data.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bw != null)
-                    bw.close();
-                if (fw != null)
-                    fw.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+        writeToOutputFile(audit_filename, audit_data);
     }
 
     /*
@@ -489,12 +472,19 @@ public class OPLElection implements Election {
             }
             else { short_report_data.append(c.getName()).append("\n");}
         }
+        writeToOutputFile(short_report_filename, short_report_data);
+    }
+
+    /*
+     * Write all the information stored in file_data variable to file with filename variable name
+     */
+    private void writeToOutputFile(StringBuilder filename, StringBuilder file_data) {
         BufferedWriter bw = null;
         FileWriter fw = null;
         try {
-            fw = new FileWriter(String.valueOf(short_report_filename));
+            fw = new FileWriter(filename.toString());
             bw = new BufferedWriter(fw);
-            bw.write(short_report_data.toString());
+            bw.write(file_data.toString());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

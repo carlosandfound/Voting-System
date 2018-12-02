@@ -1,17 +1,13 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
  * Class use for testing purposes
  */
 public class scratch {
-    public static String padString(String s, int n) {
-        if (n > 0) {
-            return String.format("%1$-" + n + "s", s).replaceAll(" ", "-");
-        }
-        return "";
-    }
-
 
     public static void main(String[] args) {
         Candidate c1 = new Candidate("Bob", "P");

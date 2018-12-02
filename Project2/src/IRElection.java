@@ -31,12 +31,13 @@ public class IRElection implements Election {
     private boolean has_been_run;
     private int total_num_votes;
     private String timeStamp;
-    private StringBuffer audit_data;
-    private StringBuffer audit_filename;
-    private StringBuffer invalidated_data;
-    private StringBuffer invalidated_filename;
-    private StringBuffer short_report_data;
-    private StringBuffer short_report_filename;
+    private String date;
+    private StringBuilder audit_data;
+    private StringBuilder audit_filename;
+    private StringBuilder invalidated_data;
+    private StringBuilder invalidated_filename;
+    private StringBuilder short_report_data;
+    private StringBuilder short_report_filename;
 
     private int[][] ballots;
     private Candidate[] candidates;
@@ -65,12 +66,13 @@ public class IRElection implements Election {
         this.quota = (num_ballots/2) + 1;
         this.minority_criteria = quota;
         this.timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        this.audit_data = new StringBuffer();
-        this.audit_filename = new StringBuffer();
-        this.invalidated_data = new StringBuffer();
-        this.invalidated_filename = new StringBuffer();
-        this.short_report_data = new StringBuffer();
-        this.short_report_filename = new StringBuffer();
+        this.date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
+        this.audit_data = new StringBuilder();
+        this.audit_filename = new StringBuilder();
+        this.invalidated_data = new StringBuilder();
+        this.invalidated_filename = new StringBuilder();
+        this.short_report_data = new StringBuilder();
+        this.short_report_filename = new StringBuilder();
         this.ballots = new int[num_ballots][num_candidates];
         this.candidates = new Candidate[num_candidates];
         this.winning_candidate_id = -1;
@@ -143,7 +145,9 @@ public class IRElection implements Election {
      * Method to obtain the table created in an {@code IRElection} instance.
      * @return An {@code Table} representation of the election results
      */
-    public Table getTable() { return table; }
+    public Table getTable() {
+        return table;
+    }
 
     /**
      * Method to obtain the number of candidates present in an {@code IRElection} instance.
@@ -190,6 +194,12 @@ public class IRElection implements Election {
      */
     public String getTimeStamp() { return timeStamp; }
 
+    /**
+     * Method to obtain the date of an {@code IRElection} instance.
+     * @return A {@code String} denoting the start time of the election.
+     */
+    public String getDate() { return date; }
+
     /*
      * ALL private "helper" methods are below
      */
@@ -217,6 +227,8 @@ public class IRElection implements Election {
             ballot_id++;
         }
         calculateWinner();
+        System.out.println("Total: " + exhausted_pile_totals);
+        System.out.println("Updates: " + exhausted_pile_updates);
         table.populate(candidates, exhausted_pile_totals, exhausted_pile_updates, total_num_votes);
         gatherWinnerInfo(winning_candidate_id);
         writeToAuditFile(timeStamp);
@@ -388,6 +400,7 @@ public class IRElection implements Election {
         int votes_reallocated = 0;
         for (int i = 0; i < loser_ballot_ids.size(); i++) {
             int loser_ballot_id = loser_ballot_ids.get(i);
+            candidates[loser_id].removeVote();
             for (int j = 1; j < num_candidates; j++) {
                 int new_id = ballots[loser_ballot_id][j];
                 // check for the next highest ranked candidate that hasn't been eliminated
@@ -411,20 +424,25 @@ public class IRElection implements Election {
         return false;
     }
 
+    /* Method responsible for modifying (1) the exhausted_pile_totals member variable with the total number of exhausted
+     * votes as of the current round and (2) the exhausted_pile_updates member variable with the number of exhausted votes
+     * added since the last round
+     */
     private void updateRoundVotes() {
         int new_total_votes = 0;
         for (Candidate c : candidates) {
             c.updateRoundVotes(c.getNumVotes());
             new_total_votes += c.getNumVotes();
         }
-        int num_exhausted_votes = total_num_votes - new_total_votes;
+        int num_new_exhausted_votes = total_num_votes - new_total_votes;
         int size = exhausted_pile_totals.size();
-        exhausted_pile_totals.add(num_exhausted_votes);
+        exhausted_pile_updates.add(num_new_exhausted_votes);
         if (size > 0) {
-            int added_exhausted_votes= total_num_votes - exhausted_pile_totals.get(size-1);
-            exhausted_pile_updates.add(added_exhausted_votes);
+            int total_exhausted_votes = exhausted_pile_totals.get(size-1) + num_new_exhausted_votes;
+            exhausted_pile_totals.add(total_exhausted_votes);
         } else {
-            exhausted_pile_updates.add(num_exhausted_votes);
+            /* total number of exhausted votes and number of added exhausted votes are equal in the first round */
+            exhausted_pile_totals.add(num_new_exhausted_votes);
         }
     }
 
@@ -504,24 +522,7 @@ public class IRElection implements Election {
      */
     private void writeToAuditFile(String timeStamp) {
         audit_filename.append("audit_file_").append(bf.getFilename()).append("_").append(timeStamp).append(".txt");
-        BufferedWriter bw = null;
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(String.valueOf(audit_filename));
-            bw = new BufferedWriter(fw);
-            bw.write(audit_data.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bw != null)
-                    bw.close();
-                if (fw != null)
-                    fw.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+        writeToOutputFile(audit_filename, audit_data);
     }
 
     /*
@@ -529,51 +530,41 @@ public class IRElection implements Election {
      */
     private void writeToInvalidFile(String timeStamp) {
         invalidated_filename.append("invalidated_").append(timeStamp).append(".txt");
-        BufferedWriter bw = null;
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(String.valueOf(invalidated_filename));
-            bw = new BufferedWriter(fw);
-            bw.write(invalidated_data.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bw != null)
-                    bw.close();
-                if (fw != null)
-                    fw.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+        writeToOutputFile(invalidated_filename, invalidated_data);
     }
 
     /*
-     * Write all the information needed including election date, type, candidates, number of seats and the winner to a short report file.
+     * Write all the information needed including election date, type, candidates, number of seats and the winner to a
+     * short report file.
      */
     private void writeToShortReport(String timeStamp) {
         short_report_filename.append("short_report_").append(timeStamp).append(".txt");
-        short_report_data.append("Date of election: ").append(timeStamp, 0, 8).append("\n");
+        short_report_data.append("Date of election: ").append(date).append("\n");
         short_report_data.append("Type of election: IRV\n");
         short_report_data.append("The candidates: ");
         for (int i = 0; i < num_candidates; i++) {
             short_report_data.append(candidates[i].getName());
             if (i != num_candidates - 1) {
                 short_report_data.append(", ");
-            }
-            else {
+            } else {
                 short_report_data.append("\n");
             }
         }
         short_report_data.append("Number of seats: 1\n");
         short_report_data.append("The winner: ").append(winning_candidate.iterator().next().getName());
+        writeToOutputFile(short_report_filename, short_report_data);
+    }
+
+    /*
+     * Write all the information stored in file_data variable to file with filename variable name
+     */
+    private void writeToOutputFile(StringBuilder filename, StringBuilder file_data) {
         BufferedWriter bw = null;
         FileWriter fw = null;
         try {
-            fw = new FileWriter(String.valueOf(short_report_filename));
+            fw = new FileWriter(filename.toString());
             bw = new BufferedWriter(fw);
-            bw.write(short_report_data.toString());
+            bw.write(file_data.toString());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -587,5 +578,4 @@ public class IRElection implements Election {
             }
         }
     }
-
 }
