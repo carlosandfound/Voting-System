@@ -140,6 +140,12 @@ public class IRElection implements Election {
     }
 
     /**
+     * Method to obtain the table created in an {@code IRElection} instance.
+     * @return An {@code Table} representation of the election results
+     */
+    public Table getTable() { return table; }
+
+    /**
      * Method to obtain the number of candidates present in an {@code IRElection} instance.
      * @return An {@code int} denoting the number of candidates in the election.
      */
