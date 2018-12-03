@@ -26,7 +26,7 @@ public class Table {
     private int update_buffer;
 
     /**
-     * Initializes an {@code Table} instance with parameters initialized to default parameter values
+     * Initializes a {@code Table} instance with parameters initialized to default parameter values
      */
     public Table() {
         this.table = new StringBuilder();
@@ -61,7 +61,7 @@ public class Table {
     }
 
     /**
-     * Method to obtain the populated IRV table of an {@code Table} instance.
+     * Method to obtain the populated IRV table of a {@code Table} instance.
      * @return A {@code String} containing table in string format ready to be printed to the console log.
      */
     @Override
@@ -207,7 +207,7 @@ public class Table {
             if (i != rounds - 1)
                 table.append(padString(round_buffer+3, "-"));
             else
-                table.append(padString(round_buffer+2, "-")).append("+");
+                table.append(padString(round_buffer+2, "-")).append("+").append("\n");
         }
     }
 
