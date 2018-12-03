@@ -105,7 +105,7 @@ public class Candidate {
      * @param ballot_id An {@code int} denoting the ballot ID that is to be acquired by the candidate.
      */
     public void acquireBallot(int ballot_id) {
-        num_votes += 1;
+        num_votes ++;
         acquired_ballots.add(ballot_id);
     }
 
@@ -113,7 +113,8 @@ public class Candidate {
      * Method to remove a vote for the {@code Candidate} instance.
      */
     public void removeVote() {
-        num_votes--;
+        if (num_votes > 0)
+            num_votes--;
     }
 
     /**

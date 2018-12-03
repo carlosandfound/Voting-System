@@ -227,8 +227,6 @@ public class IRElection implements Election {
             ballot_id++;
         }
         calculateWinner();
-        System.out.println("Total: " + exhausted_pile_totals);
-        System.out.println("Updates: " + exhausted_pile_updates);
         table.populate(candidates, exhausted_pile_totals, exhausted_pile_updates, total_num_votes);
         gatherWinnerInfo(winning_candidate_id);
         writeToAuditFile(timeStamp);
@@ -434,16 +432,14 @@ public class IRElection implements Election {
             c.updateRoundVotes(c.getNumVotes());
             new_total_votes += c.getNumVotes();
         }
-        int num_new_exhausted_votes = total_num_votes - new_total_votes;
+        int num_exhausted_votes = total_num_votes - new_total_votes;
         int size = exhausted_pile_totals.size();
-        exhausted_pile_updates.add(num_new_exhausted_votes);
-        if (size > 0) {
-            int total_exhausted_votes = exhausted_pile_totals.get(size-1) + num_new_exhausted_votes;
-            exhausted_pile_totals.add(total_exhausted_votes);
-        } else {
-            /* total number of exhausted votes and number of added exhausted votes are equal in the first round */
-            exhausted_pile_totals.add(num_new_exhausted_votes);
+        exhausted_pile_totals.add(num_exhausted_votes);
+        if (num_exhausted_votes > 0) {
+            int prev_round_num_exhausted_votes = exhausted_pile_totals.get(size-1);
+            num_exhausted_votes -= prev_round_num_exhausted_votes;
         }
+        exhausted_pile_updates.add(num_exhausted_votes);
     }
 
     /*
