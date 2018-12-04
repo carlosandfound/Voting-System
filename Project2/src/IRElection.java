@@ -227,6 +227,8 @@ public class IRElection implements Election {
         }
         calculateWinner();
         table.populate(candidates, exhausted_pile_totals, exhausted_pile_updates, total_num_votes);
+        System.out.println(table.toString());
+
         gatherWinnerInfo(winning_candidate_id);
         writeToAuditFile(timeStamp);
         writeToInvalidFile(timeStamp);

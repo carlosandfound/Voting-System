@@ -3,7 +3,7 @@
  *
  * Description: this file contains the unit tests for all public methods within the IRElection class.
  *
- * Authors: Xiaochen Zhang
+ * Authors: Xiaochen Zhang, Michael McLaughlin
  */
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -12,13 +12,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class IRElectionTest {
     private static BallotFile bf;
     private static IRElection e;
-    //private static Table t;
 
     @BeforeAll
     static void setup() {
@@ -30,7 +31,6 @@ public class IRElectionTest {
         try {
             bf = new BallotFile(ballot_file);
             e = new IRElection(bf);
-            //t = new Table();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -64,6 +64,7 @@ public class IRElectionTest {
         expected_string.append("The following table shows the progression of votes through the election rounds: \n");
         expected_string.append(e.getTable().toString());
         assertEquals(expected_string.toString(), e.toString());
+
     }
 
     @Test
@@ -117,5 +118,28 @@ public class IRElectionTest {
     void testTimeStamp() {
         e.toString();
         assertEquals(14, e.getTimeStamp().length());
+    }
+    @Test
+    void testGetTable() {
+        StringBuilder expected_table = new StringBuilder();
+        expected_table.append("+----------------------------+-------------------+-------------------+-------------------+-------------------+\n");
+        expected_table.append("|         Candidates         |      Round 1      |      Round 2      |      Round 3      |      Round 4      |\n");
+        expected_table.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_table.append("|    Candidate     |  Party  |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |\n");
+        expected_table.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_table.append("|Rosen             |D        |        3|       +3|        3|        0|        3|        0|        4|       +1|\n");
+        expected_table.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_table.append("|Kleinberg         |R        |        0|        0|        0|        0|        0|        0|        0|        0|\n");
+        expected_table.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_table.append("|Chou              |I        |        2|       +2|        2|        0|        2|        0|        0|       -2|\n");
+        expected_table.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_table.append("|Royce             |L        |        0|        0|        0|        0|        0|        0|        0|        0|\n");
+        expected_table.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_table.append("|Exhausted Pile    |         |        0|        0|        0|        0|        0|        0|        1|       +1|\n");
+        expected_table.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_table.append("|Totals            |         |        5|       +5|                                                           |\n");
+        expected_table.append("+------------------+---------+---------+---------+-----------------------------------------------------------+\n");
+
+        assertEquals(expected_table.toString(), e.getTable().toString());
     }
 }
