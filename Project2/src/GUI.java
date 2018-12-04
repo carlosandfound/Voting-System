@@ -24,14 +24,13 @@ public class GUI extends JPanel {
     private JButton browseFileButton;
     private JRadioButton rbText;
     private File selectedFile;
-    private File workingDirectory;
     private String filename;
+
     /**
      * Initializes an instance of the "Voting System" graphical user interface (GUI).
      */
     public GUI() {
         filename = "";
-        workingDirectory = new File(System.getProperty("user.dir"));
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -89,6 +88,7 @@ public class GUI extends JPanel {
 
         browseFileButton.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
+            File workingDirectory = new File(System.getProperty("user.dir"));
             chooser.setCurrentDirectory(workingDirectory);
             int returnValue = chooser.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -101,24 +101,14 @@ public class GUI extends JPanel {
     /**
      * Method responsible for obtaining the string input (filename) that the user has provided and that the GUI captured
      * either through the text field or search-for-file window
-     * return A {@code String} denoting the filename of the ballot file that is to be processed.
+     * @return A {@code String} denoting the filename of the ballot file that is to be processed.
      */
     public String getUserInput() {
-        calculateFileName();
-        return filename;
-    }
-
-    /* Method responsible for modifying the member variable filename by reformatting the string input depending on which
-     * method the user denoted the filename through
-     */
-    private void calculateFileName() {
         if (rbText.isSelected()) {
-            filename = fldText.getText().toString().replaceAll("[[,]]","");
+            filename = fldText.getText().replaceAll("[[,]]","");
         } else if (selectedFile != null) {
-            String dir = workingDirectory.toString() + "/";
-            String selected_filename = selectedFile.toString();
-            if (selected_filename.contains(dir))
-                filename = selected_filename.replaceAll(dir, "");
+            filename = selectedFile.getName();
         }
+        return filename;
     }
 }
