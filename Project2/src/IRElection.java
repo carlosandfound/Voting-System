@@ -17,7 +17,6 @@ import java.util.*;
  * <h2>Purpose</h2>
  * The IRElection class provides methods to obtain the results of an IR election specified by some {@code BallotFile}.
  */
-
 public class IRElection implements Election {
     private BallotFile bf;
     private int candidates_line_num;

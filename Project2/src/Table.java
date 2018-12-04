@@ -15,7 +15,6 @@ import java.util.*;
  * The Table class provides methods to create, population and display the table that contains progression of votes
  * through each round of an IRV election obtain the results of an IR election.
  */
-
 public class Table {
     private StringBuilder table;
     private int candidates_buffer;

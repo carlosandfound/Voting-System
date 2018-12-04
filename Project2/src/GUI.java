@@ -17,19 +17,15 @@ import java.io.File;
  * <h2>Purpose</h2>
  * The GUI class provides all methods to initialize the graphical user interface and track and received all user input
  */
-
 public class GUI extends JPanel {
 
     private JTextField fldText;
     private JTextField fldFileName;
     private JButton browseFileButton;
-
+    private JRadioButton rbText;
     private File selectedFile;
     private File workingDirectory;
     private String filename;
-
-    private JRadioButton rbText;
-
     /**
      * Initializes an instance of the "Voting System" graphical user interface (GUI).
      */
