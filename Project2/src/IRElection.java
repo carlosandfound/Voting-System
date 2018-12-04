@@ -143,7 +143,7 @@ public class IRElection implements Election {
 
     /**
      * Method to obtain the table created in an {@code IRElection} instance.
-     * @return An {@code Table} representation of the election results
+     * @return A {@code Table} representation of the election results
      */
     public Table getTable() {
         return table;

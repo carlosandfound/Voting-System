@@ -41,7 +41,7 @@ class UserInterfaceTest {
     void requestBallotFilename() {
         String input = "simple_opl_ballot_file.csv";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
-        String ballot_filename = ui.requestBallotFilename(System.out, System.in);
+        String ballot_filename = ui.requestBallotFilename();
         assertEquals(ballot_filename, input);
     }
 

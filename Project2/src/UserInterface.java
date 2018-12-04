@@ -3,9 +3,10 @@
  *
  * Description: this file contains the class implementation for the UserInterface class used in the "Voting System" product
  *
- * Author: Justin Koo
+ * Author: Carlos Alvarenga, Justin Koo
  */
 
+import javax.swing.*;
 import java.io.*;
 
 /**
@@ -14,36 +15,51 @@ import java.io.*;
  * The UserInterface class provides all methods to prompt for and process user input.
  */
 public class UserInterface {
+    private boolean termination_request;
+    private boolean has_been_run;
 
     /**
      * Initializes an instance of the "Voting System" user interface.
      */
     public UserInterface() {
-        // No initializations necessary
+        has_been_run = false;
+        termination_request = false;
     }
 
     /**
      * Prompts the system user for the filename of the specific ballot file they wish to process.
-     * @param out An {@code OutputStream} through which the request is made.
-     * @param in An {@code InputStream} through which the user provides the request response.
      * @return A {@code String} denoting the filename of the ballot file that is to be processed.
      */
-    public String requestBallotFilename(OutputStream out, InputStream in) {
-        String request = "Enter a ballot filename: ";
-        try {
-            out.write(request.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String requestBallotFilename() {
+        String filename = "";
+        if (!has_been_run) {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+                ex.printStackTrace();
+            }
+            GUI userInputPane = new GUI();
+            int result = JOptionPane.showConfirmDialog(null, userInputPane, "Ballot File", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    filename = userInputPane.getUserInput();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                termination_request = true;
+            }
+            has_been_run = true;
         }
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        String filename;
-        try {
-            filename = br.readLine();
-            return filename;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return filename;
+    }
+
+    /**
+     * Method responsible for notifying whether or not the user has pressed the cancel button on the GUI
+     * @return A {@code Boolean} denoting whether or not the system user has exited out of the GUI
+     */
+    public boolean cancelButtonPressed() {
+        return termination_request;
     }
 
     /**

@@ -1,143 +1,128 @@
 /*
  * File: GUI.java
  *
- * Description: This file contains the class implementation for the GUI class. This class is the one responsible for displaying a user interface and make the user to be able to input a filename or look for a file on disk.
+ * Description: This file contains the class implementation for the GUI class. This class is the one responsible for
+ * displaying a user interface and make the user to be able to input a filename or look for a file on disk.
  *
- * Authors: Xiaochen Zhang
+ * Authors: Carlos Alvarenga, Xiaochen Zhang
  */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class GUI {
+/**
+ * <h1>GUI</h1>
+ * <h2>Purpose</h2>
+ * The GUI class provides all methods to initialize the graphical user interface and track and received all user input
+ */
 
-    public static void main(String[] args) {
-        new GUI();
-    }
+public class GUI extends JPanel {
 
+    private JTextField fldText;
+    private JTextField fldFileName;
+    private JButton browseFileButton;
+
+    private File selectedFile;
+    private File workingDirectory;
+    private String filename;
+
+    private JRadioButton rbText;
+
+    /**
+     * Initializes an instance of the "Voting System" graphical user interface (GUI).
+     */
     public GUI() {
-        EventQueue.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-                ex.printStackTrace();
-            }
+        filename = "";
+        workingDirectory = new File(System.getProperty("user.dir"));
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-            UserInputPane userInputPane = new UserInputPane();
-            int result = JOptionPane.showConfirmDialog(null, userInputPane, "Ballot File", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-            if (result == JOptionPane.OK_OPTION) {
-                try {
-                    List<String> text = userInputPane.getText();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+        rbText = new JRadioButton("Enter filename: ");
+        JRadioButton rbFile = new JRadioButton("Search For File: ");
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(rbText);
+        bg.add(rbFile);
+
+        fldText = new JTextField(10);
+        fldFileName = new JTextField(10);
+        fldFileName.setEditable(false);
+        browseFileButton = new JButton("...");
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(rbText, gbc);
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.gridx++;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(fldText, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(rbFile, gbc);
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.gridx++;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(fldFileName, gbc);
+        gbc.gridx++;
+        gbc.fill = GridBagConstraints.NONE;
+        add(browseFileButton, gbc);
+
+        fldText.setEnabled(false);
+        fldFileName.setEnabled(false);
+        browseFileButton.setEnabled(true);
+
+        ActionListener listener = e -> {
+            fldText.setEnabled(rbText.isSelected());
+            fldFileName.setEnabled(!rbText.isSelected());
+            browseFileButton.setEnabled(!rbText.isSelected());
+
+            if (rbText.isSelected()) {
+                fldText.requestFocusInWindow();
+            }
+        };
+
+        rbFile.addActionListener(listener);
+        rbText.addActionListener(listener);
+
+        browseFileButton.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setCurrentDirectory(workingDirectory);
+            int returnValue = chooser.showOpenDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                selectedFile = chooser.getSelectedFile();
+                fldFileName.setText(selectedFile.getName());
             }
         });
     }
 
-    public class UserInputPane extends JPanel {
-
-        private JTextField fldText;
-        private JTextField fldFileName;
-        private JButton browseFileButton;
-
-        private File selectedFile;
-
-        private JRadioButton rbText;
-        private JRadioButton rbFile;
-
-        public UserInputPane() {
-            setLayout(new GridBagLayout());
-            GridBagConstraints gbc = new GridBagConstraints();
-
-            rbText = new JRadioButton("Text: ");
-            rbFile = new JRadioButton("File: ");
-            ButtonGroup bg = new ButtonGroup();
-            bg.add(rbText);
-            bg.add(rbFile);
-
-            fldText = new JTextField(10);
-            fldFileName = new JTextField(10);
-            fldFileName.setEditable(false);
-            browseFileButton = new JButton("...");
-
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.anchor = GridBagConstraints.WEST;
-            add(rbText, gbc);
-            gbc.anchor = GridBagConstraints.EAST;
-            gbc.gridx++;
-            gbc.gridwidth = GridBagConstraints.REMAINDER;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            add(fldText, gbc);
-
-            gbc.gridwidth = 1;
-            gbc.fill = GridBagConstraints.NONE;
-            gbc.gridx = 0;
-            gbc.gridy++;
-            gbc.anchor = GridBagConstraints.WEST;
-            add(rbFile, gbc);
-            gbc.anchor = GridBagConstraints.EAST;
-            gbc.gridx++;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            add(fldFileName, gbc);
-            gbc.gridx++;
-            gbc.fill = GridBagConstraints.NONE;
-            add(browseFileButton, gbc);
-
-            fldText.setEnabled(false);
-            fldFileName.setEnabled(false);
-            browseFileButton.setEnabled(false);
-
-            ActionListener listener = e -> {
-                fldText.setEnabled(rbText.isSelected());
-                fldFileName.setEnabled(!rbText.isSelected());
-                browseFileButton.setEnabled(!rbText.isSelected());
-
-                if (rbText.isSelected()) {
-                    fldText.requestFocusInWindow();
-                }
-            };
-
-            rbFile.addActionListener(listener);
-            rbText.addActionListener(listener);
-
-            browseFileButton.addActionListener(e -> {
-                JFileChooser chooser = new JFileChooser();
-
-                int returnValue = chooser.showOpenDialog(null);
-
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    selectedFile = chooser.getSelectedFile();
-                    fldFileName.setText(selectedFile.getName());
-                }
-            });
-
-        }
-
-        public List<String> getText() throws IOException {
-            List<String> text = new ArrayList<>(25);
-            if (rbText.isSelected()) {
-                text.add(fldText.getText());
-            } else if (selectedFile != null) {
-
-                try (BufferedReader br = new BufferedReader(new FileReader(selectedFile))) {
-                    String value;
-                    while ((value = br.readLine()) != null) {
-                        text.add(value);
-                    }
-                }
-
-            }
-            return text;
-        }
-
+    /**
+     * Method responsible for obtaining the string input (filename) that the user has provided and that the GUI captured
+     * either through the text field or search-for-file window
+     * return A {@code String} denoting the filename of the ballot file that is to be processed.
+     */
+    public String getUserInput() {
+        calculateFileName();
+        return filename;
     }
 
+    /* Method responsible for modifying the member variable filename by reformatting the string input depending on which
+     * method the user denoted the filename through
+     */
+    private void calculateFileName() {
+        if (rbText.isSelected()) {
+            filename = fldText.getText().toString().replaceAll("[[,]]","");
+        } else if (selectedFile != null) {
+            String dir = workingDirectory.toString() + "/";
+            String selected_filename = selectedFile.toString();
+            if (selected_filename.contains(dir))
+                filename = selected_filename.replaceAll(dir, "");
+        }
+    }
 }
