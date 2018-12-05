@@ -199,6 +199,24 @@ public class IRElection implements Election {
      */
     public String getDate() { return date; }
 
+    /**
+     * Method to obtain the total number of exhausted votes of an {@code IRElection} instance.
+     * @return A {@code List<Integer>} denoting the total number of exhausted votes.
+     */
+    public List<Integer> getExhaustedPileTotals() { return exhausted_pile_totals; }
+
+    /**
+     * Method to obtain the number of exhausted votes added in each round of an {@code IRElection} instance.
+     * @return A {@code List<Integer>} denoting the number of exhausted votes added in each round.
+     */
+    public List<Integer> getExhaustedPileUpdates() { return exhausted_pile_updates; }
+
+    /**
+     * Method to obtain the total number of votes of an {@code IRElection} instance.
+     * @return An {@code int} denoting the total number of votes.
+     */
+    public int getTotalNumVotes() { return total_num_votes; }
+
     /*
      * ALL private "helper" methods are below
      */
