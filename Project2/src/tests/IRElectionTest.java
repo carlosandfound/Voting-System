@@ -11,9 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.util.Arrays;
 import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -119,6 +118,13 @@ public class IRElectionTest {
         e.toString();
         assertEquals(14, e.getTimeStamp().length());
     }
+
+    @Test
+    void testDate() {
+        e.toString();
+        assertEquals(10, e.getDate().length());
+    }
+
     @Test
     void testGetTable() {
         StringBuilder expected_table = new StringBuilder();
@@ -141,5 +147,23 @@ public class IRElectionTest {
         expected_table.append("+------------------+---------+---------+---------+-----------------------------------------------------------+\n");
 
         assertEquals(expected_table.toString(), e.getTable().toString());
+    }
+
+    @Test
+    public void testExhaustedPileTotals() {
+        e.toString();
+        assertEquals(Arrays.asList(0, 0, 0, 1), e.getExhaustedPileTotals());
+    }
+
+    @Test
+    public void testExhaustedPileUpdates() {
+        e.toString();
+        assertEquals(Arrays.asList(0, 0, 0, 1), e.getExhaustedPileUpdates());
+    }
+
+    @Test
+    public void testTotalNumVotes() {
+        e.toString();
+        assertEquals(5, e.getTotalNumVotes());
     }
 }
