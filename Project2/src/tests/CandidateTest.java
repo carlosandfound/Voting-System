@@ -3,11 +3,13 @@
  *
  * Description: this file contains the unit tests for all public methods within the Candidate class.
  *
- * Authors: Justin Koo
+ * Authors: Justin Koo, Xiaochen Zhang
  */
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,5 +71,30 @@ class CandidateTest {
     void acquireBallotCorrectNumVotes() {
         c.acquireBallot(0);
         assertEquals(1, c.getNumVotes());
+    }
+
+    @Test
+    void testTotalRoundVotes() {
+        assertEquals(Arrays.asList(), c.getTotalRoundVotes());
+    }
+
+    @Test
+    void testUpdatedRoundVotes() {
+        c.getUpdatedRoundVotes();
+        assertEquals(Arrays.asList(), c.getUpdatedRoundVotes());
+
+    }
+
+    @Test
+    void testRemoveVote() {
+        c.removeVote();
+        assertEquals(0, c.getNumVotes());
+    }
+
+    @Test
+    void testUpdateRoundVotes() {
+        c.updateRoundVotes(2);
+        assertEquals(Arrays.asList(2), c.getTotalRoundVotes());
+        assertEquals(Arrays.asList(2), c.getUpdatedRoundVotes());
     }
 }
