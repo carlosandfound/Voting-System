@@ -24,13 +24,13 @@ public class GUI extends JPanel {
     private JButton browseFileButton;
     private JRadioButton rbText;
     private File selectedFile;
-    private String filename;
+    private String user_input;
 
     /**
      * Initializes an instance of the "Voting System" graphical user interface (GUI).
      */
     public GUI() {
-        filename = "";
+        user_input = "";
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -105,10 +105,19 @@ public class GUI extends JPanel {
      */
     public String getUserInput() {
         if (rbText.isSelected()) {
-            filename = fldText.getText().replaceAll("[[,]]","");
+            user_input = fldText.getText().replaceAll("[[,]]","");
         } else if (selectedFile != null) {
-            filename = selectedFile.getName();
+            user_input = selectedFile.getName();
         }
-        return filename;
+        return user_input;
+    }
+
+    /**
+     * Mutator method for the user_input variable of the {@code GUI} instance.
+     * This variable denotes what filename the user entered or the name of the file that the user selected in the GUI.
+     * @param user_input A {@code String} denoting the input filename provided by the user.
+     */
+    public void setUserInput(String user_input) {
+        this.user_input = user_input;
     }
 }

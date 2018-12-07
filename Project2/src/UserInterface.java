@@ -55,11 +55,37 @@ public class UserInterface {
     }
 
     /**
-     * Method responsible for notifying whether or not the user has pressed the cancel button on the GUI
-     * @return A {@code Boolean} denoting whether or not the system user has exited out of the GUI
+     * Accessor method responsible for the termination_request variable of the {@code UserInterface} instance.
+     * This variable denotes whether or not the user has pressed the cancel button on the GUI.
+     * @return A {@code boolean} denoting whether or not the system user has exited out of the GUI
      */
     public boolean cancelButtonPressed() {
         return termination_request;
+    }
+
+    /**
+     * Mutator method for the termination_request variable of the {@code UserInterface} instance.
+     * @param termination_request A {@code boolean} denoting the termination request status of the user interface.
+     */
+    public void setTerminationRequest(boolean termination_request) {
+        this.termination_request = termination_request;
+    }
+
+    /**
+     * Accessor method for the has_been_run variable of the {@code UserInterface} instance.
+     * This variables denotes whether or not an election had been run with the program.
+     * @return A {@code string} denoting whether or not an election has been run.
+     */
+    public boolean getHasBeenRun() {
+        return has_been_run;
+    }
+
+    /**
+     * Mutator method for the has_been_run variable of the {@code UserInterface} instance.
+     * @param has_been_run A {@code boolean} denoting whether or not an election has been run.
+     */
+    public void setHas_been_run(boolean has_been_run) {
+        this.has_been_run = has_been_run;
     }
 
     /**
