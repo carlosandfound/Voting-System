@@ -93,7 +93,7 @@ public class GUI extends JPanel {
             int returnValue = chooser.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 selectedFile = chooser.getSelectedFile();
-                fldFileName.setText(selectedFile.getName());
+                fldFileName.setText(selectedFile.toString());
             }
         });
     }
@@ -105,9 +105,9 @@ public class GUI extends JPanel {
      */
     public String getUserInput() {
         if (rbText.isSelected()) {
-            user_input = fldText.getText().replaceAll("[[,]]","");
+            user_input = (fldText.getText().replaceAll("[[,]]",""));
         } else if (selectedFile != null) {
-            user_input = selectedFile.getName();
+            user_input = selectedFile.toString();
         }
         return user_input;
     }
