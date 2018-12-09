@@ -202,11 +202,15 @@ public class Table {
         table.append("+").append(padString(party_buffer, "-")).append("----");
         table.append("+").append(padString(votes_buffer, "-")).append("--");
         table.append("+").append(padString(update_buffer, "-")).append("--+");
-        for (int i = 1; i < rounds; i++) {
-            if (i != rounds - 1)
-                table.append(padString(round_buffer+3, "-"));
-            else
-                table.append(padString(round_buffer+2, "-")).append("+").append("\n");
+        if (rounds <= 1) {
+            table.append("\n");
+        } else {
+            for (int i = 1; i < rounds; i++) {
+                if (i != rounds - 1)
+                    table.append(padString(round_buffer + 3, "-"));
+                else
+                    table.append(padString(round_buffer + 2, "-")).append("+").append("\n");
+            }
         }
     }
 
