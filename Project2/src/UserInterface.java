@@ -84,7 +84,7 @@ public class UserInterface {
      * Mutator method for the has_been_run variable of the {@code UserInterface} instance.
      * @param has_been_run A {@code boolean} denoting whether or not an election has been run.
      */
-    public void setHas_been_run(boolean has_been_run) {
+    public void setHasBeenRun(boolean has_been_run) {
         this.has_been_run = has_been_run;
     }
 

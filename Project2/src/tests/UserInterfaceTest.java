@@ -3,11 +3,10 @@
  *
  * Description: this file contains the unit tests for all public methods within the UserInterface class.
  *
- * Authors: Justin Koo
+ * Authors: Carlos Alvarenga, Justin Koo
  */
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -38,11 +37,31 @@ class UserInterfaceTest {
     }
 
     @Test
-    void requestBallotFilename() {
-        String input = "simple_opl_ballot_file.csv";
-        System.setIn(new ByteArrayInputStream(input.getBytes()));
-        String ballot_filename = ui.requestBallotFilename();
-        assertEquals(ballot_filename, input);
+    void cancelButtonPressed() {
+        assertTrue(!ui.cancelButtonPressed());
+    }
+
+    @Test
+    void setTerminationRequest() {
+        ui.setTerminationRequest(true);
+        assertTrue(ui.cancelButtonPressed());
+    }
+
+    @Test
+    void getHasBeenRun() {
+        assertTrue(!ui.getHasBeenRun());
+    }
+
+    @Test
+    void setHasBeenRun() {
+        ui.setHasBeenRun(true);
+        assertTrue(ui.getHasBeenRun());
+    }
+
+    @Test
+    void requestBallotFilenameWhenHasBeenRun() {
+        ui.setHasBeenRun(true);
+        assertEquals("", ui.requestBallotFilename());
     }
 
     @Test
