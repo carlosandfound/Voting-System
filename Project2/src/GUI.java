@@ -34,7 +34,7 @@ public class GUI extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        rbText = new JRadioButton("Enter filename: ");
+        rbText = new JRadioButton("Enter Filename: ");
         JRadioButton rbFile = new JRadioButton("Search For File: ");
         ButtonGroup bg = new ButtonGroup();
         bg.add(rbText);
@@ -43,7 +43,7 @@ public class GUI extends JPanel {
         fldText = new JTextField(10);
         fldFileName = new JTextField(10);
         fldFileName.setEditable(false);
-        browseFileButton = new JButton("...");
+        browseFileButton = new JButton("Search");
 
         gbc.gridx = 0;
         gbc.gridy = 0;
