@@ -140,13 +140,6 @@ public class SystemTest {
     }
 
     @Test
-    void VotingSystemArgumentProvidedLargeOPLBallotFileNoErrors() {
-        assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsArgument("testing/large_opl_ballot_file.csv");
-        });
-    }
-
-    @Test
     void VotingSystemInvalidArgumentProvidedNoErrors() {
         assertDoesNotThrow(() -> {
             runVotingSystemWithFilenameAsArgument("testing/llarge_opl_ballot_file.csv");
