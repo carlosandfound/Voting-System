@@ -149,7 +149,7 @@ public class SystemTest {
     @Test
     void VotingSystemInvalidArgumentProvidedNoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsArgument("testing/large_opl_ballot_file.csv");
+            runVotingSystemWithFilenameAsArgument("testing/llarge_opl_ballot_file.csv");
         });
     }
 
