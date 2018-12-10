@@ -84,11 +84,13 @@ class TableTest {
                 .getPath("testing", "ir_ballot_file_6.csv")
                 .toString();
         File ballot_file_6 = new File(ir_ballot_file_6_path);
+
         String ir_ballot_file_7_path = FileSystems
                 .getDefault()
                 .getPath("testing", "ir_ballot_file_7.csv")
                 .toString();
         File ballot_file_7 = new File(ir_ballot_file_7_path);
+        
         String ir_ballot_file_8_path = FileSystems
                 .getDefault()
                 .getPath("testing", "ir_ballot_file_8.csv")
