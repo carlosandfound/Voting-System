@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,6 +45,7 @@ class TableTest {
     private static Table t6;
     private static Table t7;
     private static Table t8;
+    private static Table t9;
 
     @BeforeAll
     static void setup() {
@@ -124,6 +127,8 @@ class TableTest {
             bf8 = new BallotFile(ballot_file_8);
             e8 = new IRElection(bf8);
             t8 = new Table();
+
+            t9 = new Table();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -534,54 +539,126 @@ class TableTest {
         assertEquals(expected_string.toString(), t7.toString());
     }
 
-        @Test
-        public void testToStringIRBF8() {
-            e8.toString();
-            StringBuilder expected_string = new StringBuilder();
-            expected_string.append("+----------------------------+-------------------+-------------------+-------------------+-------------------+\n");
-            expected_string.append("|         Candidates         |      Round 1      |      Round 2      |      Round 3      |      Round 4      |\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|    Candidate     |  Party  |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Rosen             |D        |        3|       +3|        3|        0|        3|        0|        4|       +1|\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Kleinberg         |R        |        2|       +2|        2|        0|        2|        0|        0|       -2|\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Chou              |I        |        0|        0|        0|        0|        0|        0|        0|        0|\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Royce             |L        |        1|       +1|        1|        0|        0|       -1|        0|        0|\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Exhausted Pile    |         |        0|        0|        0|        0|        1|       +1|        2|       +1|\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Totals            |         |        6|       +6|                                                           |\n");
-            expected_string.append("+------------------+---------+---------+---------+-----------------------------------------------------------+\n");
+    @Test
+    public void testToStringIRBF8() {
+        e8.toString();
+        StringBuilder expected_string = new StringBuilder();
+        expected_string.append("+----------------------------+-------------------+-------------------+-------------------+-------------------+\n");
+        expected_string.append("|         Candidates         |      Round 1      |      Round 2      |      Round 3      |      Round 4      |\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|    Candidate     |  Party  |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Rosen             |D        |        3|       +3|        3|        0|        3|        0|        4|       +1|\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Kleinberg         |R        |        2|       +2|        2|        0|        2|        0|        0|       -2|\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Chou              |I        |        0|        0|        0|        0|        0|        0|        0|        0|\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Royce             |L        |        1|       +1|        1|        0|        0|       -1|        0|        0|\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Exhausted Pile    |         |        0|        0|        0|        0|        1|       +1|        2|       +1|\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Totals            |         |        6|       +6|                                                           |\n");
+        expected_string.append("+------------------+---------+---------+---------+-----------------------------------------------------------+\n");
 
-            System.out.println("Table for ir_ballot_file_8.csv:\n" + e8.getTable().toString());
-            assertEquals(expected_string.toString(), e8.getTable().toString());
-        }
+        System.out.println("Table for ir_ballot_file_8.csv:\n" + e8.getTable().toString());
+        assertEquals(expected_string.toString(), e8.getTable().toString());
+    }
 
 
-        @Test
-        public void testPopulateIRBF8() {
-            t8.populate(e8.getCandidates(), e8.getExhaustedPileTotals(), e8.getExhaustedPileUpdates(), e8.getTotalNumVotes());
-            StringBuilder expected_string = new StringBuilder();
-            expected_string.append("+----------------------------+-------------------+-------------------+-------------------+-------------------+\n");
-            expected_string.append("|         Candidates         |      Round 1      |      Round 2      |      Round 3      |      Round 4      |\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|    Candidate     |  Party  |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Rosen             |D        |        3|       +3|        3|        0|        3|        0|        4|       +1|\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Kleinberg         |R        |        2|       +2|        2|        0|        2|        0|        0|       -2|\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Chou              |I        |        0|        0|        0|        0|        0|        0|        0|        0|\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Royce             |L        |        1|       +1|        1|        0|        0|       -1|        0|        0|\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Exhausted Pile    |         |        0|        0|        0|        0|        1|       +1|        2|       +1|\n");
-            expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
-            expected_string.append("|Totals            |         |        6|       +6|                                                           |\n");
-            expected_string.append("+------------------+---------+---------+---------+-----------------------------------------------------------+\n");
-            assertEquals(expected_string.toString(), t8.toString());
+    @Test
+    public void testPopulateIRBF8() {
+        t8.populate(e8.getCandidates(), e8.getExhaustedPileTotals(), e8.getExhaustedPileUpdates(), e8.getTotalNumVotes());
+        StringBuilder expected_string = new StringBuilder();
+        expected_string.append("+----------------------------+-------------------+-------------------+-------------------+-------------------+\n");
+        expected_string.append("|         Candidates         |      Round 1      |      Round 2      |      Round 3      |      Round 4      |\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|    Candidate     |  Party  |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Rosen             |D        |        3|       +3|        3|        0|        3|        0|        4|       +1|\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Kleinberg         |R        |        2|       +2|        2|        0|        2|        0|        0|       -2|\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Chou              |I        |        0|        0|        0|        0|        0|        0|        0|        0|\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Royce             |L        |        1|       +1|        1|        0|        0|       -1|        0|        0|\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Exhausted Pile    |         |        0|        0|        0|        0|        1|       +1|        2|       +1|\n");
+        expected_string.append("+------------------+---------+---------+---------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Totals            |         |        6|       +6|                                                           |\n");
+        expected_string.append("+------------------+---------+---------+---------+-----------------------------------------------------------+\n");
+        assertEquals(expected_string.toString(), t8.toString());
+    }
+
+    @Test
+    public void testPopulateStringWriteupExample() {
+        Candidate c1 = new Candidate("Bob Kiss", "Progressive");
+        Candidate c2 = new Candidate("Kurt Wright", "Republican");
+        Candidate c3 = new Candidate("Andy Montroll", "Democrat");
+        Candidate c4 = new Candidate("Dan Smith", "Independent");
+        Candidate c5 = new Candidate("James Simpson", "Green");
+        Candidate c6 = new Candidate("Adam Johnson", "Liberterian");
+        Candidate[] candidates = {c1, c2, c3, c4, c5, c6};
+
+        c1.updateRoundVotes(2585);
+        c1.updateRoundVotes(2981);
+        c1.updateRoundVotes(4313);
+
+        c2.updateRoundVotes(2951);
+        c2.updateRoundVotes(3294);
+        c2.updateRoundVotes(4061);
+
+        c3.updateRoundVotes(2063);
+        c3.updateRoundVotes(2554);
+        c3.updateRoundVotes(0);
+
+        c4.updateRoundVotes(1306);
+        c4.updateRoundVotes(0);
+        c4.updateRoundVotes(0);
+
+        c5.updateRoundVotes(35);
+        c5.updateRoundVotes(0);
+        c5.updateRoundVotes(0);
+
+        c6.updateRoundVotes(36);
+        c6.updateRoundVotes(0);
+        c6.updateRoundVotes(0);
+
+        List<Integer> exhausted_pile_totals = new ArrayList<>();
+        List<Integer> exhausted_pile_updates = new ArrayList<>();
+        exhausted_pile_totals.add(4);
+        exhausted_pile_totals.add(151);
+        exhausted_pile_totals.add(606);
+        exhausted_pile_updates.add(4);
+        exhausted_pile_updates.add(4);
+        exhausted_pile_updates.add(147);
+        exhausted_pile_updates.add(455);
+        int votes = 8980;
+
+        t9.populate(candidates, exhausted_pile_totals, exhausted_pile_updates, votes);
+        StringBuilder expected_string = new StringBuilder();
+        expected_string.append("+----------------------------------+-------------------+-------------------+-------------------+\n");
+        expected_string.append("|            Candidates            |      Round 1      |      Round 2      |      Round 3      |\n");
+        expected_string.append("+------------------+---------------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|    Candidate     |     Party     |  Votes  |    ±    |  Votes  |    ±    |  Votes  |    ±    |\n");
+        expected_string.append("+------------------+---------------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Bob Kiss          |Progressive    |     2585|    +2585|     2981|     +396|     4313|    +1332|\n");
+        expected_string.append("+------------------+---------------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Kurt Wright       |Republican     |     2951|    +2951|     3294|     +343|     4061|     +767|\n");
+        expected_string.append("+------------------+---------------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Andy Montroll     |Democrat       |     2063|    +2063|     2554|     +491|        0|    -2554|\n");
+        expected_string.append("+------------------+---------------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Dan Smith         |Independent    |     1306|    +1306|        0|    -1306|        0|        0|\n");
+        expected_string.append("+------------------+---------------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|James Simpson     |Green          |       35|      +35|        0|      -35|        0|        0|\n");
+        expected_string.append("+------------------+---------------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Adam Johnson      |Liberterian    |       36|      +36|        0|      -36|        0|        0|\n");
+        expected_string.append("+------------------+---------------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Exhausted Pile    |               |        4|       +4|      151|       +4|      606|     +147|\n");
+        expected_string.append("+------------------+---------------+---------+---------+---------+---------+---------+---------+\n");
+        expected_string.append("|Totals            |               |     8980|    +8980|                                       |\n");
+        expected_string.append("+------------------+---------------+---------+---------+---------------------------------------+\n");
+        System.out.println("Table for example provided in write-up:\n" + t9.toString());
+        assertEquals(expected_string.toString(), t9.toString());
     }
 }
