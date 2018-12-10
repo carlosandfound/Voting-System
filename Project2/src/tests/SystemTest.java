@@ -64,9 +64,23 @@ public class SystemTest {
     }
 
     @Test
-    void VotingSystemSimpleIRBallotFileNoErrors() {
+    void VotingSystemIRBallotFile6NoErrors() {
         assertDoesNotThrow(() -> {
-            runVotingSystemWithFilenameAsInput("testing/simple_ir_ballot_file.csv");
+            runVotingSystemWithFilenameAsInput("testing/ir_ballot_file_6.csv");
+        });
+    }
+
+    @Test
+    void VotingSystemIRBallotFile7NoErrors() {
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsInput("testing/ir_ballot_file_7.csv");
+        });
+    }
+
+    @Test
+    void VotingSystemIRBallotFile8NoErrors() {
+        assertDoesNotThrow(() -> {
+            runVotingSystemWithFilenameAsInput("testing/ir_ballot_file_8.csv");
         });
     }
 
