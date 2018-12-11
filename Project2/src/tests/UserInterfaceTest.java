@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserInterfaceTest {
     private UserInterface ui;
+    private UserInterface ui2;
+    private UserInterface ui3;
 
     @BeforeEach
     void setUp() {
@@ -30,25 +32,39 @@ class UserInterfaceTest {
     }
 
     @Test
-    void userInterfaceConstructor() {
+    void userInterfaceConstructorTest() {
         assertDoesNotThrow(() -> {
             ui = new UserInterface();
         });
     }
 
     @Test
-    void cancelButtonPressed() {
+    void cancelButtonHasNotBeenPressedTestAuto() {
         assertTrue(!ui.cancelButtonPressed());
     }
 
     @Test
-    void setTerminationRequest() {
+    void cancelButtonHasNotBeenPressedTestManual() {
+        ui2 = new UserInterface();
+        ui2.requestBallotFilename();
+        assertTrue(!ui2.cancelButtonPressed());
+    }
+
+    @Test
+    void cancelButtonHasBeenPressedTestManual() {
+        ui3 = new UserInterface();
+        ui3.requestBallotFilename();
+        assertTrue(ui3.cancelButtonPressed());
+    }
+
+    @Test
+    void setTerminationRequestTest() {
         ui.setTerminationRequest(true);
         assertTrue(ui.cancelButtonPressed());
     }
 
     @Test
-    void getHasBeenRun() {
+    void getHasBeenRunTest() {
         assertTrue(!ui.getHasBeenRun());
     }
 
