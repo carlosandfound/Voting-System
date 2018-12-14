@@ -7,9 +7,23 @@ Team 17
 
 It is assumed that the .csv ballot files and .java source files are in the same directory at the same level.
 
-For the VotingSystem.java test to run correctly on IntelliJ, the .csv files must be within the /Project1 folder since the program is run at this folder level.
+For the test files to run correctly on IntelliJ, all .csv files must be within the /Project2/testing folder since the test classes are in the Project2/testing folder and the ballot files are assumed to be in this same folder level.
 
-The program can be run in any folder in the linux terminal window assuming that the ballot files and class files are in the same directory level. The audit file will then be generated in this same directory. However, for IntelliJ, the specified filename must also contain the folder name if the ballot files are within a sub-folder. For example if the program is run in /Project1, and the ballot file 'test.csv' is in the sub-folder 'src', the file name must be 'src/test.csv' instead of just 'test.csv'. This also applies to a linux terminal window command.
+GUI functionality 
+- Selecting the "Enter filename" option allows you to enter the filename in a text field
+- Selecting the "Search For File" option allows you to search for the file on disk
+- When selecting "Search For File", select the "Search" button to commenze file searching. This will take you to a new window where you can search for the file. In this window, selecting the "Cancel" button exits out this window, discarding any choice. Selecting the "Open" button saves and confirms selection of the file selected in the window.
+- When done, select the "OK" button to effectively provide the selected ballot file to the program. Selecting "Cancel" will close the GUI window and end the program.
+
+The program can be run in any folder in the linux terminal window and the generated output files will be generated in this same directory level. There are two ways to run the program.
+
+1.) Specifying the filname as a command-line argument:
+- In IntelliJ, it's assumed that the .csv ballot file is in the same directory level as the .java class files. If the ballot file is within a sub-folder of the current directory, the specified filename must also contain the sub-folder name. For example if the program is run in /Project2/src, and the ballot file 'test.csv' is in the sub-folder 'testing' (i.e. /Project2/src/testing, the filename provided must be 'testing/test.csv' instead of just 'test.csv'. This also applies to a linux terminal window command.
+- If the ballot isn't anywhere within the current directory holding all the class files, the full path name of the file must be provided as the filename.
+
+2.) Not specifying the filname as a command-line argument and instead proving it through the GUI prompt:
+- Providing the filename through the GUI window's text field (i.e. "Enter Filename" option) works exactly like specifying the filename as a command-line argument (see section above)
+- Providing the filename through the GUI window's search-for-file option (i.e. "Search for File" option) can handle a file in any directory (i.e. the ballot file doesn't have to be in the same directory as the one holding the class files)
 
 The "main()" method is located in /src/VotingSystem.java, so to compile and run the program open a terminal window on UNIX, navigate to the proper directory and execute:
     javac VotingSystem.java
