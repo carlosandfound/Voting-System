@@ -7,7 +7,7 @@
 3)  Justin Koo (kooxx078)
 4)  Michael McLaughlin (mclau361)
 
-### Objective
+### Purpose
 Use java to build software that can be used to perform Instant Runoff Voting and Open Party List Voting in an efficient, reliable manner according to the software requirements specifications.
 
 Software will be built in the following two phases
