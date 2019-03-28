@@ -11,5 +11,5 @@
 Use java to build software that can be used to perform Instant Runoff Voting and Open Party List Voting in an efficient, reliable manner according to the software requirements specifications.
 
 Software will be built in the following two phases
-1. [Waterfall Model phase](https://github.com/carlosandfound/Voting-System/blob/master/Project1/project1guidelines.pdf)    
-2. [Agile Methodology phase](https://github.com/carlosandfound/Voting-System/blob/master/Project2/project2guidelines.pdf)
+1. [Waterfall Model phase](https://github.com/carlosandfound/Voting-System/blob/master/Project1/project1requirements.pdf)    
+2. [Agile Methodology phase](https://github.com/carlosandfound/Voting-System/blob/master/Project2/project2requirements.pdf)
